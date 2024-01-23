@@ -4,10 +4,11 @@
 
 # phpunit
 /.phpunit.result.cache
+/coverage/
 
-# misc.
-/opis-database.sublime-workspace
-.idea/
-shared/
-Gemfile.lock
-tests/db.sql
+# other
+/*.sublime-workspace
+/.idea/
+/shared/
+/Gemfile.lock
+/tests/db.sql
