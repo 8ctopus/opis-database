@@ -1,7 +1,11 @@
+# composer
+/composer.lock
 /vendor/
+
+
+# misc.
+/opis-database.sublime-workspace
 .idea/
-_site/
 shared/
 Gemfile.lock
 tests/db.sql
-composer.lock
