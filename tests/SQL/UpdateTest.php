@@ -19,6 +19,11 @@ namespace Opis\Database\Test\SQL;
 
 use Opis\Database\SQL\Expression;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class UpdateTest extends BaseClass
 {
     public function testUpdate()
@@ -40,7 +45,7 @@ class UpdateTest extends BaseClass
         $expected = 'UPDATE "users" SET "name" = "username"';
         $actual = $this->db->update('users')->set([
             'name' => function (Expression $expr) {
-                $expr->column("username");
+                $expr->column('username');
             },
         ]);
         $this->assertEquals($expected, $actual);
@@ -49,56 +54,56 @@ class UpdateTest extends BaseClass
     public function testUpdateIncrementByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 1';
-        $actual = $this->db->update('users')->increment("age");
+        $actual = $this->db->update('users')->increment('age');
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateIncrementMultipleByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 1, "foo" = "foo" + 1';
-        $actual = $this->db->update('users')->increment(["age", "foo"]);
+        $actual = $this->db->update('users')->increment(['age', 'foo']);
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateIncrementByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 5';
-        $actual = $this->db->update('users')->increment("age", 5);
+        $actual = $this->db->update('users')->increment('age', 5);
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateIncrementMultipleByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" + 5, "foo" = "foo" + 5';
-        $actual = $this->db->update('users')->increment(["age", "foo"], 5);
+        $actual = $this->db->update('users')->increment(['age', 'foo'], 5);
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateDecrementByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 1';
-        $actual = $this->db->update('users')->decrement("age");
+        $actual = $this->db->update('users')->decrement('age');
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateDecrementMultipleByOne()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 1, "foo" = "foo" - 1';
-        $actual = $this->db->update('users')->decrement(["age", "foo"]);
+        $actual = $this->db->update('users')->decrement(['age', 'foo']);
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateDecrementByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 5';
-        $actual = $this->db->update('users')->decrement("age", 5);
+        $actual = $this->db->update('users')->decrement('age', 5);
         $this->assertEquals($expected, $actual);
     }
 
     public function testUpdateDecrementMultipleByN()
     {
         $expected = 'UPDATE "users" SET "age" = "age" - 5, "foo" = "foo" - 5';
-        $actual = $this->db->update('users')->decrement(["age", "foo"], 5);
+        $actual = $this->db->update('users')->decrement(['age', 'foo'], 5);
         $this->assertEquals($expected, $actual);
     }
 }

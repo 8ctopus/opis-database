@@ -22,15 +22,14 @@ use Opis\Database\SQL\SQLStatement;
 
 class DB2 extends Compiler
 {
-
     /**
      * Returns the SQL for a select statement
      *
-     * @param   SQLStatement $select
+     * @param SQLStatement $select
      *
-     * @return  string
+     * @return string
      */
-    public function select(SQLStatement $select): string
+    public function select(SQLStatement $select) : string
     {
         $limit = $select->getLimit();
 
@@ -61,7 +60,7 @@ class DB2 extends Compiler
         }
 
         $limit += $offset;
-        $offset++;
+        ++$offset;
 
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' . $limit;
     }

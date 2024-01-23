@@ -19,6 +19,11 @@ namespace Opis\Database\Test\SQL;
 
 use Opis\Database\SQL\Expression;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class WhereTest extends BaseClass
 {
     public function testWhereIs()
@@ -128,13 +133,12 @@ class WhereTest extends BaseClass
         $this->assertEquals($expected, $actual);
     }
 
-
     public function testWhereNotInQuery()
     {
         $expected = 'SELECT * FROM "users" WHERE "age" NOT IN (SELECT "name" FROM "customers")';
         $actual = $this->db->from('users')->where('age')->notIn(function ($query) {
             $query->from('customers')->select('name');
-        })->select();;
+        })->select();
         $this->assertEquals($expected, $actual);
     }
 
@@ -316,7 +320,8 @@ class WhereTest extends BaseClass
         $this->assertEquals($expected, $actual);
     }
 
-    public function testWhereNop() {
+    public function testWhereNop()
+    {
         $expected = 'SELECT * FROM "users" WHERE match( "username" ) against( \'expression\' )';
         $actual = $this->db->from('users')
             ->where(function (Expression $expr) {

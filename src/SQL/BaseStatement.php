@@ -21,12 +21,11 @@ use Closure;
 
 class BaseStatement extends WhereStatement
 {
-
     /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
+     * @param string|string[] $table
+     * @param Closure         $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return BaseStatement|Delete|Select
      */
     public function join($table, Closure $closure)
     {
@@ -35,10 +34,10 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
+     * @param string|string[] $table
+     * @param Closure         $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return BaseStatement|Delete|Select
      */
     public function leftJoin($table, Closure $closure)
     {
@@ -47,10 +46,10 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
+     * @param string|string[] $table
+     * @param Closure         $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return BaseStatement|Delete|Select
      */
     public function rightJoin($table, Closure $closure)
     {
@@ -59,10 +58,10 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string|string[] $table
-     * @param   Closure $closure
+     * @param string|string[] $table
+     * @param Closure         $closure
      *
-     * @return  Delete|Select|BaseStatement
+     * @return BaseStatement|Delete|Select
      */
     public function fullJoin($table, Closure $closure)
     {
@@ -71,9 +70,9 @@ class BaseStatement extends WhereStatement
     }
 
     /**
-     * @param   string|string[] $table
+     * @param string|string[] $table
      *
-     * @return  Delete|Select|BaseStatement
+     * @return BaseStatement|Delete|Select
      */
     public function crossJoin($table)
     {

@@ -17,6 +17,11 @@
 
 namespace Opis\Database\Test\SQL;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class LimitTest extends BaseClass
 {
     public function testLimit()

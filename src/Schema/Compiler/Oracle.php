@@ -17,9 +17,9 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable
-};
+use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\BaseColumn;
+use Opis\Database\Schema\Compiler;
 
 class Oracle extends Compiler
 {
@@ -30,152 +30,9 @@ class Oracle extends Compiler
     protected $modifiers = ['default', 'nullable', 'autoincrement'];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeInteger(BaseColumn $column): string
-    {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-                return 'NUMBER(3)';
-            case 'small':
-                return 'NUMBER(5)';
-            case 'medium':
-                return 'NUMBER(7)';
-            case 'big':
-                return 'NUMBER(19)';
-        }
-
-        return 'NUMBER(10)';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeDouble(BaseColumn $column): string
-    {
-        return 'FLOAT(24)';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeDecimal(BaseColumn $column): string
-    {
-        if (null !== $l = $column->get('length')) {
-            if (null === $p = $column->get('precision')) {
-                return 'NUMBER(' . $this->value($l) . ')';
-            }
-            return 'NUMBER(' . $this->value($l) . ', ' . $this->value($p) . ')';
-        }
-
-        return 'NUMBER(10)';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeBoolean(BaseColumn $column): string
-    {
-        return 'NUMBER(1)';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeText(BaseColumn $column): string
-    {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-            case 'small':
-                return 'VARCHAR2(2000)';
-            case 'medium':
-            case 'big':
-                return 'CLOB';
-        }
-
-        return 'CLOB';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeString(BaseColumn $column): string
-    {
-        return 'VARCHAR2(' . $this->value($column->get('length', 255)) . ')';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeTime(BaseColumn $column): string
-    {
-        return 'DATE';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeDateTime(BaseColumn $column): string
-    {
-        return 'DATE';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeBinary(BaseColumn $column): string
-    {
-        switch ($column->get('size', 'normal')) {
-            case 'tiny':
-            case 'small':
-                return 'RAW(2000)';
-            case 'medium':
-            case 'large':
-                return 'BLOB';
-        }
-
-        return 'BLOB';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleModifyColumn(AlterTable $table, $data): string
-    {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY ' . $this->handleColumns([$data]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleAddColumn(AlterTable $table, $data): string
-    {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD ' . $this->handleColumns([$data]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleSetDefaultValue(AlterTable $table, $data): string
-    {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
-            . $this->wrap($data) . ' DEFAULT ' . $this->value($data['value']);
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleDropDefaultValue(AlterTable $table, $data): string
-    {
-        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
-            . $this->wrap($data) . ' DEFAULT NULL';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function currentDatabase(string $dsn): array
+    public function currentDatabase(string $dsn) : array
     {
         return [
             'sql' => 'SELECT user FROM dual',
@@ -184,9 +41,9 @@ class Oracle extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getTables(string $database): array
+    public function getTables(string $database) : array
     {
         $sql = 'SELECT ' . $this->wrap('table_name') . ' FROM ' . $this->wrap('all_tables')
             . ' WHERE owner = ? '
@@ -199,9 +56,9 @@ class Oracle extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getColumns(string $database, string $table): array
+    public function getColumns(string $database, string $table) : array
     {
         $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
             . ', ' . $this->wrap('data_type') . ' AS ' . $this->wrap('type')
@@ -213,5 +70,152 @@ class Oracle extends Compiler
             'sql' => $sql,
             'params' => [$database, $table],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeInteger(BaseColumn $column) : string
+    {
+        switch ($column->get('size', 'normal')) {
+            case 'tiny':
+                return 'NUMBER(3)';
+
+            case 'small':
+                return 'NUMBER(5)';
+
+            case 'medium':
+                return 'NUMBER(7)';
+
+            case 'big':
+                return 'NUMBER(19)';
+        }
+
+        return 'NUMBER(10)';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeDouble(BaseColumn $column) : string
+    {
+        return 'FLOAT(24)';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeDecimal(BaseColumn $column) : string
+    {
+        if (null !== $l = $column->get('length')) {
+            if (null === $p = $column->get('precision')) {
+                return 'NUMBER(' . $this->value($l) . ')';
+            }
+            return 'NUMBER(' . $this->value($l) . ', ' . $this->value($p) . ')';
+        }
+
+        return 'NUMBER(10)';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeBoolean(BaseColumn $column) : string
+    {
+        return 'NUMBER(1)';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeText(BaseColumn $column) : string
+    {
+        switch ($column->get('size', 'normal')) {
+            case 'tiny':
+            case 'small':
+                return 'VARCHAR2(2000)';
+
+            case 'medium':
+            case 'big':
+                return 'CLOB';
+        }
+
+        return 'CLOB';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeString(BaseColumn $column) : string
+    {
+        return 'VARCHAR2(' . $this->value($column->get('length', 255)) . ')';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeTime(BaseColumn $column) : string
+    {
+        return 'DATE';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeDateTime(BaseColumn $column) : string
+    {
+        return 'DATE';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeBinary(BaseColumn $column) : string
+    {
+        switch ($column->get('size', 'normal')) {
+            case 'tiny':
+            case 'small':
+                return 'RAW(2000)';
+
+            case 'medium':
+            case 'large':
+                return 'BLOB';
+        }
+
+        return 'BLOB';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleModifyColumn(AlterTable $table, $data) : string
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY ' . $this->handleColumns([$data]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleAddColumn(AlterTable $table, $data) : string
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ADD ' . $this->handleColumns([$data]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleSetDefaultValue(AlterTable $table, $data) : string
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
+            . $this->wrap($data) . ' DEFAULT ' . $this->value($data['value']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleDropDefaultValue(AlterTable $table, $data) : string
+    {
+        return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' MODIFY '
+            . $this->wrap($data) . ' DEFAULT NULL';
     }
 }

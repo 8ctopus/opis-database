@@ -19,13 +19,18 @@ namespace Opis\Database\SQL;
 
 class Subquery
 {
-    /** @var    SelectStatement */
+    /** @var SelectStatement */
     protected $select;
 
+    public function __clone()
+    {
+        $this->select = clone $this->select;
+    }
+
     /**
-     * @param   string|array $tables
+     * @param array|string $tables
      *
-     * @return  SelectStatement
+     * @return SelectStatement
      */
     public function from($tables)
     {
@@ -34,18 +39,11 @@ class Subquery
 
     /**
      * @internal
+     *
      * @return SQLStatement
      */
-    public function getSQLStatement(): SQLStatement
+    public function getSQLStatement() : SQLStatement
     {
         return $this->select->getSQLStatement();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __clone()
-    {
-        $this->select = clone $this->select;
     }
 }

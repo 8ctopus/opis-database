@@ -17,9 +17,9 @@
 
 namespace Opis\Database\Test;
 
-use Opis\Database\Schema\CreateTable;
-use Opis\Database\Schema as BaseSchema;
 use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema as BaseSchema;
+use Opis\Database\Schema\CreateTable;
 
 class Schema extends BaseSchema
 {

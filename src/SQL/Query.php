@@ -19,20 +19,22 @@ namespace Opis\Database\SQL;
 
 use Closure;
 use Opis\Database\Connection;
+use Opis\Database\ResultSet;
 
 class Query extends BaseStatement
 {
-    /** @var    Connection */
+    /** @var Connection */
     protected $connection;
 
-    /** @var    array */
+    /** @var array */
     protected $tables;
 
     /**
      * Query constructor.
-     * @param Connection $connection
-     * @param $tables
-     * @param SQLStatement|null $statement
+     *
+     * @param Connection        $connection
+     * @param                   $tables
+     * @param null|SQLStatement $statement
      */
     public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
     {
@@ -42,25 +44,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @return  Select
-     */
-    protected function buildSelect(): Select
-    {
-        return new Select($this->connection, $this->tables, $this->sql);
-    }
-
-    /**
-     * @return  Delete
-     */
-    protected function buildDelete(): Delete
-    {
-        return new Delete($this->connection, $this->tables, $this->sql);
-    }
-
-    /**
-     * @param   bool $value (optional)
+     * @param bool $value (optional)
      *
-     * @return  Select|SelectStatement
+     * @return Select|SelectStatement
      */
     public function distinct($value = true)
     {
@@ -68,9 +54,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression|array $columns
+     * @param array|Closure|Expression|string $columns
      *
-     * @return  Select
+     * @return Select
      */
     public function groupBy($columns)
     {
@@ -78,10 +64,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column
-     * @param   Closure $value (optional)
+     * @param string  $column
+     * @param Closure $value  (optional)
      *
-     * @return  Select
+     * @return Select
      */
     public function having($column, Closure $value = null)
     {
@@ -89,10 +75,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $column
-     * @param   Closure $value (optional)
+     * @param string  $column
+     * @param Closure $value  (optional)
      *
-     * @return  Select
+     * @return Select
      */
     public function andHaving($column, Closure $value = null)
     {
@@ -100,10 +86,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   Closure $value (optional)
+     * @param Closure|Expression|string $column
+     * @param Closure                   $value  (optional)
      *
-     * @return  Select
+     * @return Select
      */
     public function orHaving($column, Closure $value = null)
     {
@@ -111,11 +97,11 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression|array $columns
-     * @param   string $order (optional)
-     * @param   string $nulls (optional)
+     * @param array|Closure|Expression|string $columns
+     * @param string                          $order   (optional)
+     * @param string                          $nulls   (optional)
      *
-     * @return  Select|SelectStatement
+     * @return Select|SelectStatement
      */
     public function orderBy($columns, $order = 'ASC', $nulls = null)
     {
@@ -123,9 +109,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   int $value
+     * @param int $value
      *
-     * @return  Select|SelectStatement
+     * @return Select|SelectStatement
      */
     public function limit($value)
     {
@@ -133,9 +119,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   int $value
+     * @param int $value
      *
-     * @return  Select|SelectStatement
+     * @return Select|SelectStatement
      */
     public function offset($value)
     {
@@ -143,10 +129,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string $table
-     * @param   string $database (optional)
+     * @param string $table
+     * @param string $database (optional)
      *
-     * @return  Select|SelectStatement
+     * @return Select|SelectStatement
      */
     public function into($table, $database = null)
     {
@@ -154,9 +140,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   array $columns (optional)
+     * @param array $columns (optional)
      *
-     * @return  \Opis\Database\ResultSet
+     * @return ResultSet
      */
     public function select($columns = [])
     {
@@ -164,9 +150,9 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $name
+     * @param Closure|Expression|string $name
      *
-     * @return  mixed|false
+     * @return false|mixed
      */
     public function column($name)
     {
@@ -174,10 +160,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column (optional)
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column   (optional)
+     * @param bool                      $distinct (optional)
      *
-     * @return  int
+     * @return int
      */
     public function count($column = '*', $distinct = false)
     {
@@ -185,10 +171,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function avg($column, $distinct = false)
     {
@@ -196,10 +182,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function sum($column, $distinct = false)
     {
@@ -207,10 +193,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function min($column, $distinct = false)
     {
@@ -218,10 +204,10 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function max($column, $distinct = false)
     {
@@ -229,12 +215,28 @@ class Query extends BaseStatement
     }
 
     /**
-     * @param   string[] $tables (optional)
+     * @param string[] $tables (optional)
      *
-     * @return  int
+     * @return int
      */
     public function delete($tables = [])
     {
         return $this->buildDelete()->delete($tables);
+    }
+
+    /**
+     * @return Select
+     */
+    protected function buildSelect() : Select
+    {
+        return new Select($this->connection, $this->tables, $this->sql);
+    }
+
+    /**
+     * @return Delete
+     */
+    protected function buildDelete() : Delete
+    {
+        return new Delete($this->connection, $this->tables, $this->sql);
     }
 }

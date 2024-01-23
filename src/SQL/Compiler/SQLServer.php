@@ -32,9 +32,10 @@ class SQLServer extends Compiler
      * Compiles a SELECT query
      *
      * @param SQLStatement $select
+     *
      * @return string
      */
-    public function select(SQLStatement $select): string
+    public function select(SQLStatement $select) : string
     {
         $limit = $select->getLimit();
 
@@ -77,17 +78,17 @@ class SQLServer extends Compiler
         $sql .= $this->handleHavings($select->getHaving());
 
         $limit += $offset;
-        $offset++;
+        ++$offset;
 
         return 'SELECT * FROM (' . $sql . ') AS m1 WHERE opis_rownum BETWEEN ' . $offset . ' AND ' . $limit;
     }
 
     /**
-     * @param   SQLStatement $update
+     * @param SQLStatement $update
      *
-     * @return  string
+     * @return string
      */
-    public function update(SQLStatement $update): string
+    public function update(SQLStatement $update) : string
     {
         $joins = $this->handleJoins($update->getJoins());
         $tables = $update->getTables();

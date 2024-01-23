@@ -22,39 +22,14 @@ use Opis\Database\SQL\SQLStatement;
 
 class Firebird extends Compiler
 {
-
-    /**
-     * Handle limits
-     * @param int|null $limit
-     * @param null $offset
-     * @return string
-     */
-    protected function handleLimit($limit, $offset = null)
-    {
-        return ($limit <= 0) ? '' : ' TO ' . ($limit + (($offset < 0) ? 0 : $offset));
-    }
-
-    /**
-     * Compiles OFFSET clause.
-     *
-     * @access  protected
-     * @param   int $limit Offset
-     * @param   int $offset Limit
-     * @return  string
-     */
-    protected function handleOffset($offset, $limit = null)
-    {
-        return ($offset < 0) ? ($limit <= 0) ? '' : ' ROWS 1 ' : ' ROWS ' . ($offset + 1);
-    }
-
     /**
      * Compiles a SELECT query.
      *
-     * @access  public
-     * @param   SQLStatement $select
-     * @return  string
+     * @param SQLStatement $select
+     *
+     * @return string
      */
-    public function select(SQLStatement $select): string
+    public function select(SQLStatement $select) : string
     {
         $sql = $select->getDistinct() ? 'SELECT DISTINCT ' : 'SELECT ';
         $sql .= $this->handleColumns($select->getColumns());
@@ -70,5 +45,31 @@ class Firebird extends Compiler
         $sql .= $this->handleLimit($select->getLimit(), $select->getOffset());
 
         return $sql;
+    }
+
+    /**
+     * Handle limits
+     *
+     * @param null|int $limit
+     * @param null     $offset
+     *
+     * @return string
+     */
+    protected function handleLimit($limit, $offset = null)
+    {
+        return ($limit <= 0) ? '' : ' TO ' . ($limit + (($offset < 0) ? 0 : $offset));
+    }
+
+    /**
+     * Compiles OFFSET clause.
+     *
+     * @param int $limit  Offset
+     * @param int $offset Limit
+     *
+     * @return string
+     */
+    protected function handleOffset($offset, $limit = null)
+    {
+        return ($offset < 0) ? ($limit <= 0) ? '' : ' ROWS 1 ' : ' ROWS ' . ($offset + 1);
     }
 }

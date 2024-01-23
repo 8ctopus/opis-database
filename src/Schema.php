@@ -17,27 +17,28 @@
 
 namespace Opis\Database;
 
-use Opis\Database\Schema\CreateTable;
+use Exception;
 use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\CreateTable;
 
 class Schema
 {
-    /** @var    \Opis\Database\Connection   Connection. */
+    /** @var Connection Connection. */
     protected $connection;
 
-    /** @var    array   Table list. */
+    /** @var array Table list. */
     protected $tableList;
 
-    /** @var    string  Currently used database name. */
+    /** @var string Currently used database name. */
     protected $currentDatabase;
 
-    /** @var    array   Column list */
+    /** @var array Column list */
     protected $columns = [];
 
     /**
      * Constructor
      *
-     * @param   \Opis\Database\Connection $connection Connection.
+     * @param Connection $connection connection
      */
     public function __construct(Connection $connection)
     {
@@ -47,8 +48,9 @@ class Schema
     /**
      * Get the name of the currently used database
      *
-     * @return  string
-     * @throws \Exception
+     * @return string
+     *
+     * @throws Exception
      */
     public function getCurrentDatabase()
     {
@@ -69,13 +71,14 @@ class Schema
     /**
      * Check if the specified table exists
      *
-     * @param   string $table Table name
-     * @param   boolean $clear (optional) Refresh table list
+     * @param string $table Table name
+     * @param bool   $clear (optional) Refresh table list
      *
-     * @return  boolean
-     * @throws \Exception
+     * @return bool
+     *
+     * @throws Exception
      */
-    public function hasTable(string $table, bool $clear = false): bool
+    public function hasTable(string $table, bool $clear = false) : bool
     {
         $list = $this->getTables($clear);
         return isset($list[strtolower($table)]);
@@ -84,12 +87,13 @@ class Schema
     /**
      * Get a list with all tables that belong to the currently used database
      *
-     * @param   boolean $clear (optional) Refresh table list
+     * @param bool $clear (optional) Refresh table list
      *
-     * @return  string[]
-     * @throws \Exception
+     * @return string[]
+     *
+     * @throws Exception
      */
-    public function getTables(bool $clear = false): array
+    public function getTables(bool $clear = false) : array
     {
         if ($clear) {
             $this->tableList = null;
@@ -120,12 +124,13 @@ class Schema
     /**
      * Get a list with all columns that belong to the specified table
      *
-     * @param   string $table
-     * @param   boolean $clear (optional) Refresh column list
-     * @param   boolean $names (optional) Return only the column names
+     * @param string $table
+     * @param bool   $clear (optional) Refresh column list
+     * @param bool   $names (optional) Return only the column names
      *
      * @return false|string[]
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function getColumns(string $table, bool $clear = false, bool $names = true)
     {
@@ -167,9 +172,10 @@ class Schema
     /**
      * Creates a new table
      *
-     * @param   string $table Table name
-     * @param   callable $callback A callback that will define table's fields and indexes
-     * @throws \Exception
+     * @param string   $table    Table name
+     * @param callable $callback A callback that will define table's fields and indexes
+     *
+     * @throws Exception
      */
     public function create(string $table, callable $callback)
     {
@@ -190,9 +196,10 @@ class Schema
     /**
      * Alters a table's definition
      *
-     * @param   string $table Table name
-     * @param   callable $callback A callback that will add or remove fields or indexes
-     * @throws \Exception
+     * @param string   $table    Table name
+     * @param callable $callback A callback that will add or remove fields or indexes
+     *
+     * @throws Exception
      */
     public function alter(string $table, callable $callback)
     {
@@ -212,9 +219,10 @@ class Schema
     /**
      * Change a table's name
      *
-     * @param   string $table The table
-     * @param   string $name The new name of the table
-     * @throws \Exception
+     * @param string $table The table
+     * @param string $name  The new name of the table
+     *
+     * @throws Exception
      */
     public function renameTable(string $table, string $name)
     {
@@ -227,8 +235,9 @@ class Schema
     /**
      * Deletes a table
      *
-     * @param   string $table Table name
-     * @throws \Exception
+     * @param string $table Table name
+     *
+     * @throws Exception
      */
     public function drop(string $table)
     {
@@ -246,8 +255,9 @@ class Schema
     /**
      * Deletes all records from a table
      *
-     * @param   string $table Table name
-     * @throws \Exception
+     * @param string $table Table name
+     *
+     * @throws Exception
      */
     public function truncate(string $table)
     {

@@ -24,6 +24,11 @@ use Opis\Database\Test\Schema;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class BaseClass extends TestCase
 {
     protected static $data = [];
@@ -31,7 +36,7 @@ class BaseClass extends TestCase
     /** @var Schema */
     protected static $db_schema;
 
-    /** @var string|null */
+    /** @var null|string */
     protected static $schema_name;
 
     /** @var Schema */
@@ -41,7 +46,7 @@ class BaseClass extends TestCase
     {
         $name = static::$schema_name;
 
-        static::$data = array_map(function($value){
+        static::$data = array_map(function ($value) {
             if (is_string($value)) {
                 $value = rtrim($value);
             }
@@ -57,9 +62,7 @@ class BaseClass extends TestCase
 
     public function testCreateTable()
     {
-        $result = $this->schema->create('foo', function (CreateTable $table) {
-
-        });
+        $result = $this->schema->create('foo', function (CreateTable $table) {});
 
         $this->execTest(__FUNCTION__, $result);
     }
@@ -90,11 +93,11 @@ class BaseClass extends TestCase
             $table->float('b');
             $table->double('c');
             $table->decimal('d');
-            $table->decimal("d1", 4);
-            $table->decimal("d2", 4, 8);
+            $table->decimal('d1', 4);
+            $table->decimal('d2', 4, 8);
             $table->boolean('e');
-            $table->string("f");
-            $table->string("f1", 32);
+            $table->string('f');
+            $table->string('f1', 32);
             $table->fixed('g');
             $table->fixed('g1', 2);
             $table->date('h');
@@ -221,7 +224,7 @@ class BaseClass extends TestCase
                 ->references('bar', 'a')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-        });;
+        });
 
         $this->execTest(__FUNCTION__, $result);
     }
@@ -242,7 +245,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableAddColumn()
     {
-        $result = $this->schema->alter('foo', function(AlterTable $table){
+        $result = $this->schema->alter('foo', function (AlterTable $table) {
             $table->integer('a');
         });
 
@@ -251,7 +254,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableAddMultipleColumns()
     {
-        $result = $this->schema->alter('foo', function(AlterTable $table){
+        $result = $this->schema->alter('foo', function (AlterTable $table) {
             $table->integer('a');
             $table->integer('b');
         });
@@ -261,7 +264,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableDropColumn()
     {
-        $result = $this->schema->alter('foo', function(AlterTable $table){
+        $result = $this->schema->alter('foo', function (AlterTable $table) {
             $table->dropColumn('a');
         });
 
@@ -270,7 +273,7 @@ class BaseClass extends TestCase
 
     public function testAlterTableAddDefaults()
     {
-        $result = $this->schema->alter('foo', function(AlterTable $table){
+        $result = $this->schema->alter('foo', function (AlterTable $table) {
             $table->setDefaultValue('a', 100);
         });
 

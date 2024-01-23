@@ -17,9 +17,10 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable
-};
+use Exception;
+use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\BaseColumn;
+use Opis\Database\Schema\Compiler;
 
 class MySQL extends Compiler
 {
@@ -27,17 +28,20 @@ class MySQL extends Compiler
     protected $wrapper = '`%s`';
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeInteger(BaseColumn $column): string
+    protected function handleTypeInteger(BaseColumn $column) : string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
                 return 'TINYINT';
+
             case 'small':
                 return 'SMALLINT';
+
             case 'medium':
                 return 'MEDIUMINT';
+
             case 'big':
                 return 'BIGINT';
         }
@@ -46,9 +50,9 @@ class MySQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(BaseColumn $column) : string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -60,24 +64,26 @@ class MySQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeBoolean(BaseColumn $column): string
+    protected function handleTypeBoolean(BaseColumn $column) : string
     {
         return 'TINYINT(1)';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeText(BaseColumn $column): string
+    protected function handleTypeText(BaseColumn $column) : string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
             case 'small':
                 return 'TINYTEXT';
+
             case 'medium':
                 return 'MEDIUMTEXT';
+
             case 'big':
                 return 'LONGTEXT';
         }
@@ -86,16 +92,18 @@ class MySQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(BaseColumn $column) : string
     {
         switch ($column->get('size', 'normal')) {
             case 'tiny':
             case 'small':
                 return 'TINYBLOB';
+
             case 'medium':
                 return 'MEDIUMBLOB';
+
             case 'big':
                 return 'LONGBLOB';
         }
@@ -104,59 +112,60 @@ class MySQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleDropPrimaryKey(AlterTable $table, $data): string
+    protected function handleDropPrimaryKey(AlterTable $table, $data) : string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP PRIMARY KEY';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleDropUniqueKey(AlterTable $table, $data): string
+    protected function handleDropUniqueKey(AlterTable $table, $data) : string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleDropIndex(AlterTable $table, $data): string
+    protected function handleDropIndex(AlterTable $table, $data) : string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP INDEX ' . $this->wrap($data);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleDropForeignKey(AlterTable $table, $data): string
+    protected function handleDropForeignKey(AlterTable $table, $data) : string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' DROP FOREIGN KEY ' . $this->wrap($data);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleSetDefaultValue(AlterTable $table, $data): string
+    protected function handleSetDefaultValue(AlterTable $table, $data) : string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER '
             . $this->wrap($data['column']) . ' SET DEFAULT ' . $this->value($data['value']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleDropDefaultValue(AlterTable $table, $data): string
+    protected function handleDropDefaultValue(AlterTable $table, $data) : string
     {
         return 'ALTER TABLE ' . $this->wrap($table->getTableName()) . ' ALTER ' . $this->wrap($data) . ' DROP DEFAULT';
     }
 
     /**
-     * @inheritdoc
-     * @throws \Exception
+     * {@inheritdoc}
+     *
+     * @throws Exception
      */
-    protected function handleRenameColumn(AlterTable $table, $data): string
+    protected function handleRenameColumn(AlterTable $table, $data) : string
     {
         $table_name = $table->getTableName();
         $column_name = $data['from'];

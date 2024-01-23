@@ -23,6 +23,11 @@ use Opis\Database\SQL\HavingExpression;
 use Opis\Database\SQL\HavingStatement;
 use Opis\Database\SQL\Join;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class HavingTest extends BaseClass
 {
     public function testColumn()
@@ -55,26 +60,26 @@ class HavingTest extends BaseClass
     {
         $actual = 'SELECT COUNT("orders"."id") AS "total_orders", "customers"."name" AS "name" FROM "customers" LEFT JOIN "orders" ON "customers"."id" = "orders"."cid" GROUP BY LCASE("customers"."name") HAVING COUNT("orders"."id") > 10 AND (SUM("orders"."value") >= 1000 OR MIN(ROUND("orders"."value", 2)) >= 500)';
         $expected = $this->db->from('customers')
-            ->leftJoin('orders', function(Join $join){
+            ->leftJoin('orders', function (Join $join) {
                 $join->on('customers.id', 'orders.cid');
             })
             ->groupBy(function (Expression $expr) {
                 $expr->lcase('customers.name');
             })
-            ->having('orders.id', function(HavingExpression $column){
+            ->having('orders.id', function (HavingExpression $column) {
                 $column->count()->gt(10);
             })
-            ->andHaving(function(HavingStatement $group){
-                $group->having('orders.value', function(HavingExpression $column){
+            ->andHaving(function (HavingStatement $group) {
+                $group->having('orders.value', function (HavingExpression $column) {
                     $column->sum()->gte(1000);
                 })
                     ->orHaving(function (Expression $expr) {
                         $expr->round('orders.value', 2);
-                    }, function(HavingExpression $column){
+                    }, function (HavingExpression $column) {
                         $column->min()->gte(500);
                     });
             })
-            ->select(function(ColumnExpression $include){
+            ->select(function (ColumnExpression $include) {
                 $include->count('orders.id', 'total_orders')
                     ->column('customers.name', 'name');
             });

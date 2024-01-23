@@ -20,6 +20,11 @@ namespace Opis\Database\Test\SQL;
 use Opis\Database\SQL\ColumnExpression;
 use Opis\Database\SQL\Expression;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class SelectTest extends BaseClass
 {
     public function testSelect()
@@ -129,5 +134,4 @@ class SelectTest extends BaseClass
             ]);
         $this->assertEquals($expected, $actual);
     }
-
 }

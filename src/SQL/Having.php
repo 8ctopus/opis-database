@@ -21,17 +21,18 @@ use Closure;
 
 class Having
 {
-    /** @var  SQLStatement */
+    /** @var SQLStatement */
     protected $sql;
 
-    /** @var    string|Expression */
+    /** @var Expression|string */
     protected $aggregate;
 
-    /** @var    string */
+    /** @var string */
     protected $separator;
 
     /**
      * Having constructor.
+     *
      * @param SQLStatement $statement
      */
     public function __construct(SQLStatement $statement)
@@ -39,28 +40,21 @@ class Having
         $this->sql = $statement;
     }
 
-    /**
-     * @param   mixed $value
-     * @param   string $operator
-     * @param   boolean $is_column
-     */
-    protected function addCondition($value, string $operator, bool $is_column)
+    public function __clone()
     {
-        if ($is_column && is_string($value)) {
-            $expr = new Expression();
-            $value = $expr->column($value);
+        if ($this->aggregate instanceof Expression) {
+            $this->aggregate = clone $this->aggregate;
         }
-
-        $this->sql->addHavingCondition($this->aggregate, $value, $operator, $this->separator);
+        $this->sql = clone $this->sql;
     }
 
     /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   string $separator
+     * @param Closure|Expression|string $aggregate
+     * @param string                    $separator
      *
-     * @return  $this
+     * @return $this
      */
-    public function init($aggregate, string $separator): self
+    public function init($aggregate, string $separator) : self
     {
         if ($aggregate instanceof Closure) {
             $aggregate = Expression::fromClosure($aggregate);
@@ -71,8 +65,8 @@ class Having
     }
 
     /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
+     * @param mixed $value
+     * @param bool  $is_column (optional)
      */
     public function eq($value, bool $is_column = false)
     {
@@ -80,8 +74,8 @@ class Having
     }
 
     /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
+     * @param mixed $value
+     * @param bool  $is_column (optional)
      */
     public function ne($value, bool $is_column = false)
     {
@@ -89,8 +83,8 @@ class Having
     }
 
     /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
+     * @param mixed $value
+     * @param bool  $is_column (optional)
      */
     public function lt($value, bool $is_column = false)
     {
@@ -98,8 +92,8 @@ class Having
     }
 
     /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
+     * @param mixed $value
+     * @param bool  $is_column (optional)
      */
     public function gt($value, bool $is_column = false)
     {
@@ -107,8 +101,8 @@ class Having
     }
 
     /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
+     * @param mixed $value
+     * @param bool  $is_column (optional)
      */
     public function lte($value, bool $is_column = false)
     {
@@ -116,8 +110,8 @@ class Having
     }
 
     /**
-     * @param   mixed $value
-     * @param   bool $is_column (optional)
+     * @param mixed $value
+     * @param bool  $is_column (optional)
      */
     public function gte($value, bool $is_column = false)
     {
@@ -125,7 +119,7 @@ class Having
     }
 
     /**
-     * @param   array|Closure $value
+     * @param array|Closure $value
      */
     public function in($value)
     {
@@ -133,7 +127,7 @@ class Having
     }
 
     /**
-     * @param   array|Closure $value
+     * @param array|Closure $value
      */
     public function notIn($value)
     {
@@ -141,8 +135,8 @@ class Having
     }
 
     /**
-     * @param   string|float|int $value1
-     * @param   string|float|int $value2
+     * @param float|int|string $value1
+     * @param float|int|string $value2
      */
     public function between($value1, $value2)
     {
@@ -150,8 +144,8 @@ class Having
     }
 
     /**
-     * @param   string|float|int $value1
-     * @param   string|float|int $value2
+     * @param float|int|string $value1
+     * @param float|int|string $value2
      */
     public function notBetween($value1, $value2)
     {
@@ -159,13 +153,17 @@ class Having
     }
 
     /**
-     * @inheritDoc
+     * @param mixed  $value
+     * @param string $operator
+     * @param bool   $is_column
      */
-    public function __clone()
+    protected function addCondition($value, string $operator, bool $is_column)
     {
-        if ($this->aggregate instanceof Expression) {
-            $this->aggregate = clone $this->aggregate;
+        if ($is_column && is_string($value)) {
+            $expr = new Expression();
+            $value = $expr->column($value);
         }
-        $this->sql = clone $this->sql;
+
+        $this->sql->addHavingCondition($this->aggregate, $value, $operator, $this->separator);
     }
 }

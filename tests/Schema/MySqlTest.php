@@ -17,7 +17,12 @@
 
 namespace Opis\Database\Test\Schema;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class MySqlTest extends BaseClass
 {
-    protected static $schema_name = "mysql";
+    protected static $schema_name = 'mysql';
 }

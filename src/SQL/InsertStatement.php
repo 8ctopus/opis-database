@@ -19,13 +19,13 @@ namespace Opis\Database\SQL;
 
 class InsertStatement
 {
-
-    /** @var  SQLStatement */
+    /** @var SQLStatement */
     protected $sql;
 
     /**
      * InsertStatement constructor.
-     * @param SQLStatement|null $statement
+     *
+     * @param null|SQLStatement $statement
      */
     public function __construct(SQLStatement $statement = null)
     {
@@ -35,20 +35,27 @@ class InsertStatement
         $this->sql = $statement;
     }
 
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+    }
+
     /**
      * @internal
+     *
      * @return SQLStatement
      */
-    public function getSQLStatement(): SQLStatement
+    public function getSQLStatement() : SQLStatement
     {
         return $this->sql;
     }
 
     /**
      * @param array $values
+     *
      * @return InsertStatement
      */
-    public function insert(array $values): self
+    public function insert(array $values) : self
     {
         foreach ($values as $column => $value) {
             $this->sql->addColumn($column);
@@ -59,18 +66,10 @@ class InsertStatement
     }
 
     /**
-     * @param   string $table
+     * @param string $table
      */
     public function into(string $table)
     {
         $this->sql->addTables([$table]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __clone()
-    {
-        $this->sql = clone $this->sql;
     }
 }

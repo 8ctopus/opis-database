@@ -29,7 +29,8 @@ class WhereStatement
 
     /**
      * WhereStatement constructor.
-     * @param SQLStatement|null $statement
+     *
+     * @param null|SQLStatement $statement
      */
     public function __construct(SQLStatement $statement = null)
     {
@@ -41,11 +42,121 @@ class WhereStatement
         $this->where = new Where($this, $statement);
     }
 
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->where = new Where($this, $this->sql);
+    }
+
     /**
-     * @param $column
+     * @internal
+     *
+     * @return SQLStatement
+     */
+    public function getSQLStatement() : SQLStatement
+    {
+        return $this->sql;
+    }
+
+    /**
+     * @param Closure|Expression|string $column
+     * @param bool                      $isExpr
+     *
+     * @return Delete|Select|Update|Where
+     */
+    public function where($column, bool $isExpr = false)
+    {
+        return $this->addWhereCondition($column, 'AND', $isExpr);
+    }
+
+    /**
+     * @param Closure|Expression|string $column
+     * @param bool                      $isExpr
+     *
+     * @return Delete|Select|Update|Where
+     */
+    public function andWhere($column, bool $isExpr = false)
+    {
+        return $this->addWhereCondition($column, 'AND', $isExpr);
+    }
+
+    /**
+     * @param Closure|Expression|string $column
+     * @param bool                      $isExpr
+     *
+     * @return Delete|Select|Update|Where
+     */
+    public function orWhere($column, bool $isExpr = false)
+    {
+        return $this->addWhereCondition($column, 'OR', $isExpr);
+    }
+
+    /**
+     * @param Closure $select
+     *
+     * @return Delete|Select|Update|Where|WhereStatement
+     */
+    public function whereExists(Closure $select) : self
+    {
+        return $this->addWhereExistCondition($select);
+    }
+
+    /**
+     * @param Closure $select
+     *
+     * @return Delete|Select|Update|Where|WhereStatement
+     */
+    public function andWhereExists(Closure $select) : self
+    {
+        return $this->addWhereExistCondition($select);
+    }
+
+    /**
+     * @param Closure $select
+     *
+     * @return Delete|Select|Update|Where|WhereStatement
+     */
+    public function orWhereExists(Closure $select) : self
+    {
+        return $this->addWhereExistCondition($select, 'OR');
+    }
+
+    /**
+     * @param Closure $select
+     *
+     * @return Delete|Select|Update|Where|WhereStatement
+     */
+    public function whereNotExists(Closure $select) : self
+    {
+        return $this->addWhereExistCondition($select, 'AND', true);
+    }
+
+    /**
+     * @param Closure $select
+     *
+     * @return Delete|Select|Update|Where|WhereStatement
+     */
+    public function andWhereNotExists(Closure $select) : self
+    {
+        return $this->addWhereExistCondition($select, 'AND', true);
+    }
+
+    /**
+     * @param Closure $select
+     *
+     * @return Delete|Select|Update|Where|WhereStatement
+     */
+    public function orWhereNotExists(Closure $select) : self
+    {
+        return $this->addWhereExistCondition($select, 'OR', true);
+    }
+
+    /**
+     * @param        $column
      * @param string $separator
-     * @param bool $isExpr
-     * @return WhereStatement|Where
+     * @param bool   $isExpr
+     *
+     * @return Where|WhereStatement
      */
     protected function addWhereCondition($column, string $separator = 'AND', bool $isExpr = false)
     {
@@ -59,115 +170,14 @@ class WhereStatement
 
     /**
      * @param Closure $select
-     * @param string $separator
-     * @param bool $not
+     * @param string  $separator
+     * @param bool    $not
+     *
      * @return WhereStatement
      */
-    protected function addWhereExistCondition(Closure $select, string $separator = 'AND', bool $not = false): self
+    protected function addWhereExistCondition(Closure $select, string $separator = 'AND', bool $not = false) : self
     {
         $this->sql->addWhereExistsCondition($select, $separator, $not);
         return $this;
-    }
-
-    /**
-     * @internal
-     * @return SQLStatement
-     */
-    public function getSQLStatement(): SQLStatement
-    {
-        return $this->sql;
-    }
-
-    /**
-     * @param string|Closure|Expression $column
-     * @param bool $isExpr
-     * @return Where|Delete|Select|Update
-     */
-    public function where($column, bool $isExpr = false)
-    {
-        return $this->addWhereCondition($column, 'AND', $isExpr);
-    }
-
-    /**
-     * @param string|Closure|Expression $column
-     * @param bool $isExpr
-     * @return Where|Delete|Select|Update
-     */
-    public function andWhere($column, bool $isExpr = false)
-    {
-        return $this->addWhereCondition($column, 'AND', $isExpr);
-    }
-
-    /**
-     * @param string|Closure|Expression $column
-     * @param bool $isExpr
-     * @return Where|Delete|Select|Update
-     */
-    public function orWhere($column, bool $isExpr = false)
-    {
-        return $this->addWhereCondition($column, 'OR', $isExpr);
-    }
-
-    /**
-     * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update
-     */
-    public function whereExists(Closure $select): self
-    {
-        return $this->addWhereExistCondition($select);
-    }
-
-    /**
-     * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update
-     */
-    public function andWhereExists(Closure $select): self
-    {
-        return $this->addWhereExistCondition($select);
-    }
-
-    /**
-     * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update
-     */
-    public function orWhereExists(Closure $select): self
-    {
-        return $this->addWhereExistCondition($select, 'OR');
-    }
-
-    /**
-     * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update
-     */
-    public function whereNotExists(Closure $select): self
-    {
-        return $this->addWhereExistCondition($select, 'AND', true);
-    }
-
-    /**
-     * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update
-     */
-    public function andWhereNotExists(Closure $select): self
-    {
-        return $this->addWhereExistCondition($select, 'AND', true);
-    }
-
-    /**
-     * @param Closure $select
-     * @return WhereStatement|Where|Delete|Select|Update
-     */
-    public function orWhereNotExists(Closure $select): self
-    {
-        return $this->addWhereExistCondition($select, 'OR', true);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __clone()
-    {
-        $this->sql = clone $this->sql;
-        $this->where = new Where($this, $this->sql);
     }
 }

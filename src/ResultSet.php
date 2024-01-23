@@ -17,19 +17,19 @@
 
 namespace Opis\Database;
 
-use PDO;
 use Closure;
+use PDO;
 use PDOStatement;
 
 class ResultSet
 {
-    /** @var    \PDOStatement   The PDOStatement associated with this result set. */
+    /** @var PDOStatement The PDOStatement associated with this result set. */
     protected $statement;
 
     /**
      * Constructor
      *
-     * @param   \PDOStatement $statement The PDOStatement associated with this result set.
+     * @param PDOStatement $statement the PDOStatement associated with this result set
      */
     public function __construct(PDOStatement $statement)
     {
@@ -47,7 +47,7 @@ class ResultSet
     /**
      * Count affected rows
      *
-     * @return  int
+     * @return int
      */
     public function count()
     {
@@ -57,10 +57,10 @@ class ResultSet
     /**
      * Fetch all results
      *
-     * @param   callable $callable (optional) Callback function
-     * @param   int $fetchStyle (optional) PDO fetch style
+     * @param callable $callable   (optional) Callback function
+     * @param int      $fetchStyle (optional) PDO fetch style
      *
-     * @return  array
+     * @return array
      */
     public function all($callable = null, $fetchStyle = 0)
     {
@@ -71,10 +71,10 @@ class ResultSet
     }
 
     /**
-     * @param   bool $uniq (optional)
-     * @param   callable $callable (optional)
+     * @param bool     $uniq     (optional)
+     * @param callable $callable (optional)
      *
-     * @return  array
+     * @return array
      */
     public function allGroup($uniq = false, $callable = null)
     {
@@ -88,9 +88,9 @@ class ResultSet
     /**
      * Fetch first result
      *
-     * @param   callable $callable (optional) Callback function
+     * @param callable $callable (optional) Callback function
      *
-     * @return  mixed
+     * @return mixed
      */
     public function first($callable = null)
     {
@@ -111,7 +111,7 @@ class ResultSet
     /**
      * Fetch next result
      *
-     * @return  mixed
+     * @return mixed
      */
     public function next()
     {
@@ -121,7 +121,7 @@ class ResultSet
     /**
      * Close current cursor
      *
-     * @return  mixed
+     * @return mixed
      */
     public function flush()
     {
@@ -131,9 +131,9 @@ class ResultSet
     /**
      * Return a column
      *
-     * @param   int $col 0-indexed number of the column you wish to retrieve
+     * @param int $col 0-indexed number of the column you wish to retrieve
      *
-     * @return  mixed
+     * @return mixed
      */
     public function column($col = 0)
     {
@@ -143,7 +143,7 @@ class ResultSet
     /**
      * Fetch each result as an associative array
      *
-     * @return  $this
+     * @return $this
      */
     public function fetchAssoc()
     {
@@ -154,7 +154,7 @@ class ResultSet
     /**
      * Fetch each result as an stdClass object
      *
-     * @return  $this
+     * @return $this
      */
     public function fetchObject()
     {
@@ -163,7 +163,7 @@ class ResultSet
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
     public function fetchNamed()
     {
@@ -172,7 +172,7 @@ class ResultSet
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
     public function fetchNum()
     {
@@ -181,7 +181,7 @@ class ResultSet
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
     public function fetchBoth()
     {
@@ -190,7 +190,7 @@ class ResultSet
     }
 
     /**
-     * @return  $this
+     * @return $this
      */
     public function fetchKeyPair()
     {
@@ -199,22 +199,22 @@ class ResultSet
     }
 
     /**
-     * @param   string $class
-     * @param   array $ctorargs (optional)
+     * @param string $class
+     * @param array  $ctorargs (optional)
      *
-     * @return  $this
+     * @return $this
      */
     public function fetchClass($class, array $ctorargs = [])
     {
-        /** @noinspection PhpMethodParametersCountMismatchInspection */
+        // @noinspection PhpMethodParametersCountMismatchInspection
         $this->statement->setFetchMode(PDO::FETCH_CLASS, $class, $ctorargs);
         return $this;
     }
 
     /**
-     * @param   Closure $func
+     * @param Closure $func
      *
-     * @return  $this
+     * @return $this
      */
     public function fetchCustom(Closure $func)
     {

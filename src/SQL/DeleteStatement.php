@@ -19,11 +19,11 @@ namespace Opis\Database\SQL;
 
 class DeleteStatement extends BaseStatement
 {
-
     /**
      * DeleteStatement constructor.
-     * @param string|array $from
-     * @param SQLStatement|null $statement
+     *
+     * @param array|string      $from
+     * @param null|SQLStatement $statement
      */
     public function __construct($from, SQLStatement $statement = null)
     {
@@ -39,7 +39,7 @@ class DeleteStatement extends BaseStatement
     /**
      * Delete records
      *
-     * @param   string|array $tables
+     * @param array|string $tables
      */
     public function delete($tables = [])
     {

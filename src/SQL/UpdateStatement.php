@@ -21,8 +21,9 @@ class UpdateStatement extends BaseStatement
 {
     /**
      * UpdateStatement constructor.
-     * @param string|array $table
-     * @param SQLStatement|null $statement
+     *
+     * @param array|string      $table
+     * @param null|SQLStatement $statement
      */
     public function __construct($table, SQLStatement $statement = null)
     {
@@ -36,11 +37,10 @@ class UpdateStatement extends BaseStatement
     }
 
     /**
-     * @param   array $columns
+     * @param array $columns
      */
     public function set(array $columns)
     {
         $this->sql->addUpdateColumns($columns);
     }
-
 }

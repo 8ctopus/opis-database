@@ -33,6 +33,7 @@ class ForeignKey
 
     /**
      * ForeignKey constructor.
+     *
      * @param string[] $columns
      */
     public function __construct(array $columns)
@@ -41,11 +42,77 @@ class ForeignKey
     }
 
     /**
-     * @param string $on
-     * @param string $action
+     * @return string
+     */
+    public function getReferencedTable() : string
+    {
+        return $this->refTable;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getReferencedColumns() : array
+    {
+        return $this->refColumns;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getColumns() : array
+    {
+        return $this->columns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getActions() : array
+    {
+        return $this->actions;
+    }
+
+    /**
+     * @param string   $table
+     * @param string[] $columns
+     *
      * @return $this
      */
-    protected function addAction(string $on, string $action): self
+    public function references(string $table, string ...$columns) : self
+    {
+        $this->refTable = $table;
+        $this->refColumns = $columns;
+        return $this;
+    }
+
+    /**
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function onDelete(string $action) : self
+    {
+        return $this->addAction('ON DELETE', $action);
+    }
+
+    /**
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function onUpdate(string $action) : self
+    {
+        return $this->addAction('ON UPDATE', $action);
+    }
+
+    /**
+     * @param string $on
+     * @param string $action
+     *
+     * @return $this
+     */
+    protected function addAction(string $on, string $action) : self
     {
         $action = strtoupper($action);
 
@@ -55,67 +122,5 @@ class ForeignKey
 
         $this->actions[$on] = $action;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReferencedTable(): string
-    {
-        return $this->refTable;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getReferencedColumns(): array
-    {
-        return $this->refColumns;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getColumns(): array
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @return array
-     */
-    public function getActions(): array
-    {
-        return $this->actions;
-    }
-
-    /**
-     * @param string $table
-     * @param string[] $columns
-     * @return $this
-     */
-    public function references(string $table, string ...$columns): self
-    {
-        $this->refTable = $table;
-        $this->refColumns = $columns;
-        return $this;
-    }
-
-    /**
-     * @param string $action
-     * @return $this
-     */
-    public function onDelete(string $action): self
-    {
-        return $this->addAction('ON DELETE', $action);
-    }
-
-    /**
-     * @param string $action
-     * @return $this
-     */
-    public function onUpdate(string $action): self
-    {
-        return $this->addAction('ON UPDATE', $action);
     }
 }

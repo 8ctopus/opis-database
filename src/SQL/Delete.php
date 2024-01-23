@@ -21,14 +21,15 @@ use Opis\Database\Connection;
 
 class Delete extends DeleteStatement
 {
-    /** @var    Connection */
+    /** @var Connection */
     protected $connection;
 
     /**
      * Delete constructor.
-     * @param Connection $connection
-     * @param string|array $from
-     * @param SQLStatement|null $statement
+     *
+     * @param Connection        $connection
+     * @param array|string      $from
+     * @param null|SQLStatement $statement
      */
     public function __construct(Connection $connection, $from, SQLStatement $statement = null)
     {
@@ -39,9 +40,9 @@ class Delete extends DeleteStatement
     /**
      * Delete records
      *
-     * @param   string|array $tables (optional)
+     * @param array|string $tables (optional)
      *
-     * @return  int
+     * @return int
      */
     public function delete($tables = [])
     {

@@ -17,23 +17,24 @@
 
 namespace Opis\Database;
 
+use Opis\Database\SQL\Insert as InsertCommand;
 use Opis\Database\SQL\InsertStatement;
 use Opis\Database\SQL\Query as QueryCommand;
-use Opis\Database\SQL\Insert as InsertCommand;
 use Opis\Database\SQL\Update as UpdateCommand;
+use PDOException;
 
 class Database
 {
-    /** @var   Connection   Connection instance. */
+    /** @var Connection Connection instance. */
     protected $connection;
 
-    /** @var    Schema       Schema instance. */
+    /** @var Schema Schema instance. */
     protected $schema;
 
     /**
      * Constructor
      *
-     * @param   Connection $connection Connection instance.
+     * @param Connection $connection connection instance
      */
     public function __construct(Connection $connection)
     {
@@ -43,9 +44,9 @@ class Database
     /**
      * Database connection
      *
-     * @return   Connection
+     * @return Connection
      */
-    public function getConnection(): Connection
+    public function getConnection() : Connection
     {
         return $this->connection;
     }
@@ -63,11 +64,11 @@ class Database
     /**
      * Execute a query in order to fetch or to delete records.
      *
-     * @param   string|array $tables Table name or an array of tables
+     * @param array|string $tables Table name or an array of tables
      *
-     * @return  QueryCommand
+     * @return QueryCommand
      */
-    public function from($tables): QueryCommand
+    public function from($tables) : QueryCommand
     {
         return new QueryCommand($this->connection, $tables);
     }
@@ -75,11 +76,11 @@ class Database
     /**
      * Insert new records into a table.
      *
-     * @param   array $values An array of values.
+     * @param array $values an array of values
      *
-     * @return  InsertCommand|InsertStatement
+     * @return InsertCommand|InsertStatement
      */
-    public function insert(array $values): InsertCommand
+    public function insert(array $values) : InsertCommand
     {
         return (new InsertCommand($this->connection))->insert($values);
     }
@@ -87,11 +88,11 @@ class Database
     /**
      * Update records.
      *
-     * @param   string $table Table name
+     * @param string $table Table name
      *
-     * @return  UpdateCommand
+     * @return UpdateCommand
      */
-    public function update($table): UpdateCommand
+    public function update($table) : UpdateCommand
     {
         return new UpdateCommand($this->connection, $table);
     }
@@ -99,9 +100,9 @@ class Database
     /**
      * The associated schema instance.
      *
-     * @return  Schema
+     * @return Schema
      */
-    public function schema(): Schema
+    public function schema() : Schema
     {
         if ($this->schema === null) {
             $this->schema = $this->connection->getSchema();
@@ -113,10 +114,12 @@ class Database
     /**
      * Performs a transaction
      *
-     * @param callable $query
-     * @param mixed|null $default
-     * @return mixed|null
-     * @throws \PDOException
+     * @param callable   $query
+     * @param null|mixed $default
+     *
+     * @return null|mixed
+     *
+     * @throws PDOException
      */
     public function transaction(callable $query, $default = null)
     {

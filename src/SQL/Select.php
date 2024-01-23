@@ -28,9 +28,10 @@ class Select extends SelectStatement
 
     /**
      * Select constructor.
-     * @param Connection $connection
-     * @param array|string $tables
-     * @param SQLStatement|null $statement
+     *
+     * @param Connection        $connection
+     * @param array|string      $tables
+     * @param null|SQLStatement $statement
      */
     public function __construct(Connection $connection, $tables, SQLStatement $statement = null)
     {
@@ -39,9 +40,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $columns (optional)
+     * @param Closure|Closure[]|Expression|Expression[]|string|string[] $columns (optional)
      *
-     * @return  ResultSet
+     * @return ResultSet
      */
     public function select($columns = [])
     {
@@ -51,9 +52,9 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression $name
+     * @param Closure|Expression|string $name
      *
-     * @return  mixed|false
+     * @return false|mixed
      */
     public function column($name)
     {
@@ -62,10 +63,10 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression|string[]|Closure[]|Expression[] $column (optional)
-     * @param   bool $distinct (optional)
+     * @param Closure|Closure[]|Expression|Expression[]|string|string[] $column   (optional)
+     * @param bool                                                      $distinct (optional)
      *
-     * @return  int
+     * @return int
      */
     public function count($column = '*', bool $distinct = false)
     {
@@ -74,10 +75,10 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function avg($column, bool $distinct = false)
     {
@@ -86,10 +87,10 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function sum($column, bool $distinct = false)
     {
@@ -98,10 +99,10 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function min($column, bool $distinct = false)
     {
@@ -110,10 +111,10 @@ class Select extends SelectStatement
     }
 
     /**
-     * @param   string|Closure|Expression $column
-     * @param   bool $distinct (optional)
+     * @param Closure|Expression|string $column
+     * @param bool                      $distinct (optional)
      *
-     * @return  int|float
+     * @return float|int
      */
     public function max($column, bool $distinct = false)
     {

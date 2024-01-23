@@ -38,7 +38,7 @@ class SQLStatement
 
     /**
      * @param Closure $callback
-     * @param $separator
+     * @param         $separator
      */
     public function addWhereConditionGroup(Closure $callback, $separator)
     {
@@ -52,10 +52,10 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param $value
-     * @param string $operator
-     * @param string $separator
+     * @param Closure|Expression|string $column
+     * @param                           $value
+     * @param string                    $operator
+     * @param string                    $separator
      */
     public function addWhereCondition($column, $value, string $operator, string $separator)
     {
@@ -69,10 +69,10 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param string $pattern
-     * @param string $separator
-     * @param bool $not
+     * @param Closure|Expression|string $column
+     * @param string                    $pattern
+     * @param string                    $separator
+     * @param bool                      $not
      */
     public function addWhereLikeCondition($column, string $pattern, string $separator, bool $not)
     {
@@ -86,11 +86,11 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param $value1
-     * @param $value2
-     * @param string $separator
-     * @param bool $not
+     * @param Closure|Expression|string $column
+     * @param                           $value1
+     * @param                           $value2
+     * @param string                    $separator
+     * @param bool                      $not
      */
     public function addWhereBetweenCondition($column, $value1, $value2, string $separator, bool $not)
     {
@@ -105,10 +105,10 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param $value
-     * @param string $separator
-     * @param bool $not
+     * @param Closure|Expression|string $column
+     * @param                           $value
+     * @param string                    $separator
+     * @param bool                      $not
      */
     public function addWhereInCondition($column, $value, string $separator, bool $not)
     {
@@ -136,9 +136,9 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param string $separator
-     * @param bool $not
+     * @param Closure|Expression|string $column
+     * @param string                    $separator
+     * @param bool                      $not
      */
     public function addWhereNullCondition($column, string $separator, bool $not)
     {
@@ -151,10 +151,11 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param string $separator
+     * @param Closure|Expression|string $column
+     * @param string                    $separator
      */
-    public function addWhereNop($column, string $separator) {
+    public function addWhereNop($column, string $separator)
+    {
         $this->wheres[] = [
             'type' => 'whereNop',
             'column' => $column,
@@ -164,8 +165,8 @@ class SQLStatement
 
     /**
      * @param Closure $closure
-     * @param string $separator
-     * @param bool $not
+     * @param string  $separator
+     * @param bool    $not
      */
     public function addWhereExistsCondition(Closure $closure, string $separator, bool $not)
     {
@@ -181,9 +182,9 @@ class SQLStatement
     }
 
     /**
-     * @param  string $type
-     * @param  string|array $table
-     * @param  Closure $closure
+     * @param string       $type
+     * @param array|string $table
+     * @param Closure      $closure
      */
     public function addJoinClause(string $type, $table, Closure $closure = null)
     {
@@ -209,8 +210,8 @@ class SQLStatement
     }
 
     /**
-     * @param   Closure $callback
-     * @param   string $separator
+     * @param Closure $callback
+     * @param string  $separator
      */
     public function addHavingGroupCondition(Closure $callback, string $separator)
     {
@@ -225,10 +226,10 @@ class SQLStatement
     }
 
     /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   mixed $value
-     * @param   string $operator
-     * @param   string $separator
+     * @param Closure|Expression|string $aggregate
+     * @param mixed                     $value
+     * @param string                    $operator
+     * @param string                    $separator
      */
     public function addHavingCondition($aggregate, $value, string $operator, string $separator)
     {
@@ -242,10 +243,10 @@ class SQLStatement
     }
 
     /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   mixed $value
-     * @param   string $separator
-     * @param   bool $not
+     * @param Closure|Expression|string $aggregate
+     * @param mixed                     $value
+     * @param string                    $separator
+     * @param bool                      $not
      */
     public function addHavingInCondition($aggregate, $value, string $separator, bool $not)
     {
@@ -273,11 +274,11 @@ class SQLStatement
     }
 
     /**
-     * @param   string|Closure|Expression $aggregate
-     * @param   int $value1
-     * @param   int $value2
-     * @param   string $separator
-     * @param   bool $not
+     * @param Closure|Expression|string $aggregate
+     * @param int                       $value1
+     * @param int                       $value2
+     * @param string                    $separator
+     * @param bool                      $not
      */
     public function addHavingBetweenCondition($aggregate, $value1, $value2, string $separator, bool $not)
     {
@@ -313,9 +314,9 @@ class SQLStatement
     }
 
     /**
-     * @param string[]|Expression[]|Closure[] $columns
-     * @param string $order
-     * @param string|null $nulls
+     * @param Closure[]|Expression[]|string[] $columns
+     * @param string                          $order
+     * @param null|string                     $nulls
      */
     public function addOrder(array $columns, string $order, string $nulls = null)
     {
@@ -345,7 +346,7 @@ class SQLStatement
     }
 
     /**
-     * @param string[]|Expression[]|Closure[] $columns
+     * @param Closure[]|Expression[]|string[] $columns
      */
     public function addGroupBy(array $columns)
     {
@@ -357,8 +358,8 @@ class SQLStatement
     }
 
     /**
-     * @param string|Closure|Expression $column
-     * @param null $alias
+     * @param Closure|Expression|string $column
+     * @param null                      $alias
      */
     public function addColumn($column, $alias = null)
     {
@@ -393,8 +394,8 @@ class SQLStatement
     }
 
     /**
-     * @param string $table
-     * @param string|null $database
+     * @param string      $table
+     * @param null|string $database
      */
     public function setInto(string $table, string $database = null)
     {
@@ -421,7 +422,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getWheres(): array
+    public function getWheres() : array
     {
         return $this->wheres;
     }
@@ -429,7 +430,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getHaving(): array
+    public function getHaving() : array
     {
         return $this->having;
     }
@@ -437,7 +438,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getJoins(): array
+    public function getJoins() : array
     {
         return $this->joins;
     }
@@ -445,7 +446,7 @@ class SQLStatement
     /**
      * @return bool
      */
-    public function getDistinct(): bool
+    public function getDistinct() : bool
     {
         return $this->distinct;
     }
@@ -453,7 +454,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getTables(): array
+    public function getTables() : array
     {
         return $this->tables;
     }
@@ -461,7 +462,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getColumns(): array
+    public function getColumns() : array
     {
         return $this->columns;
     }
@@ -469,7 +470,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getOrder(): array
+    public function getOrder() : array
     {
         return $this->order;
     }
@@ -477,7 +478,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getGroupBy(): array
+    public function getGroupBy() : array
     {
         return $this->group;
     }
@@ -485,7 +486,7 @@ class SQLStatement
     /**
      * @return int
      */
-    public function getLimit(): int
+    public function getLimit() : int
     {
         return $this->limit;
     }
@@ -493,13 +494,13 @@ class SQLStatement
     /**
      * @return int
      */
-    public function getOffset(): int
+    public function getOffset() : int
     {
         return $this->offset;
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getIntoTable()
     {
@@ -507,7 +508,7 @@ class SQLStatement
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     public function getIntoDatabase()
     {
@@ -517,7 +518,7 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getFrom(): array
+    public function getFrom() : array
     {
         return $this->from;
     }
@@ -525,14 +526,15 @@ class SQLStatement
     /**
      * @return array
      */
-    public function getValues(): array
+    public function getValues() : array
     {
         return $this->values;
     }
 
     /**
      * @param $value
-     * @return mixed|Expression
+     *
+     * @return Expression|mixed
      */
     protected function closureToExpression($value)
     {

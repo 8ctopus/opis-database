@@ -19,6 +19,11 @@ namespace Opis\Database\Test\SQL;
 
 use Opis\Database\SQL\Expression;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class InsertTest extends BaseClass
 {
     public function testInsertSingleValue()

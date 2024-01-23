@@ -17,9 +17,10 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\{
-    Compiler, BaseColumn, AlterTable, CreateTable
-};
+use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\BaseColumn;
+use Opis\Database\Schema\Compiler;
+use Opis\Database\Schema\CreateTable;
 
 class PostgreSQL extends Compiler
 {
@@ -27,9 +28,48 @@ class PostgreSQL extends Compiler
     protected $modifiers = ['nullable', 'default'];
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeInteger(BaseColumn $column): string
+    public function getColumns(string $database, string $table) : array
+    {
+        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
+            . ', ' . $this->wrap('udt_name') . ' AS ' . $this->wrap('type')
+            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
+            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
+            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
+
+        return [
+            'sql' => $sql,
+            'params' => [$database, $table],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function currentDatabase(string $dsn) : array
+    {
+        return [
+            'sql' => 'SELECT current_schema()',
+            'params' => [],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renameTable(string $current, string $new) : array
+    {
+        return [
+            'sql' => 'ALTER TABLE ' . $this->wrap($current) . ' RENAME TO ' . $this->wrap($new),
+            'params' => [],
+        ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeInteger(BaseColumn $column) : string
     {
         $autoincrement = $column->get('autoincrement', false);
 
@@ -37,8 +77,10 @@ class PostgreSQL extends Compiler
             case 'tiny':
             case 'small':
                 return $autoincrement ? 'SMALLSERIAL' : 'SMALLINT';
+
             case 'medium':
                 return $autoincrement ? 'SERIAL' : 'INTEGER';
+
             case 'big':
                 return $autoincrement ? 'BIGSERIAL' : 'BIGINT';
         }
@@ -47,25 +89,25 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeFloat(BaseColumn $column): string
+    protected function handleTypeFloat(BaseColumn $column) : string
     {
         return 'REAL';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeDouble(BaseColumn $column): string
+    protected function handleTypeDouble(BaseColumn $column) : string
     {
         return 'DOUBLE PRECISION';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeDecimal(BaseColumn $column): string
+    protected function handleTypeDecimal(BaseColumn $column) : string
     {
         if (null !== $l = $column->get('length')) {
             if (null === $p = $column->get('precision')) {
@@ -77,41 +119,41 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeBinary(BaseColumn $column): string
+    protected function handleTypeBinary(BaseColumn $column) : string
     {
         return 'BYTEA';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeTime(BaseColumn $column): string
+    protected function handleTypeTime(BaseColumn $column) : string
     {
         return 'TIME(0) WITHOUT TIME ZONE';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeTimestamp(BaseColumn $column): string
+    protected function handleTypeTimestamp(BaseColumn $column) : string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeDateTime(BaseColumn $column): string
+    protected function handleTypeDateTime(BaseColumn $column) : string
     {
         return 'TIMESTAMP(0) WITHOUT TIME ZONE';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleIndexKeys(CreateTable $schema): array
+    protected function handleIndexKeys(CreateTable $schema) : array
     {
         $indexes = $schema->getIndexes();
 
@@ -131,9 +173,9 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleRenameColumn(AlterTable $table, $data): string
+    protected function handleRenameColumn(AlterTable $table, $data) : string
     {
         /** @var BaseColumn $column */
         $column = $data['column'];
@@ -142,65 +184,26 @@ class PostgreSQL extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleAddIndex(AlterTable $table, $data): string
+    protected function handleAddIndex(AlterTable $table, $data) : string
     {
         return 'CREATE INDEX ' . $this->wrap($table->getTableName() . '_' . $data['name']) . ' ON ' . $this->wrap($table->getTableName()) . ' (' . $this->wrapArray($data['columns']) . ')';
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleDropIndex(AlterTable $table, $data): string
+    protected function handleDropIndex(AlterTable $table, $data) : string
     {
         return 'DROP INDEX ' . $this->wrap($table->getTableName() . '_' . $data);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleEngine(CreateTable $schema): string
+    protected function handleEngine(CreateTable $schema) : string
     {
         return '';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getColumns(string $database, string $table): array
-    {
-        $sql = 'SELECT ' . $this->wrap('column_name') . ' AS ' . $this->wrap('name')
-            . ', ' . $this->wrap('udt_name') . ' AS ' . $this->wrap('type')
-            . ' FROM ' . $this->wrap('information_schema') . '.' . $this->wrap('columns')
-            . ' WHERE ' . $this->wrap('table_schema') . ' = ? AND ' . $this->wrap('table_name') . ' = ? '
-            . ' ORDER BY ' . $this->wrap('ordinal_position') . ' ASC';
-
-        return [
-            'sql' => $sql,
-            'params' => [$database, $table],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function currentDatabase(string $dsn): array
-    {
-        return [
-            'sql' => 'SELECT current_schema()',
-            'params' => [],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renameTable(string $current, string $new): array
-    {
-        return [
-            'sql' => 'ALTER TABLE ' . $this->wrap($current) . ' RENAME TO ' . $this->wrap($new),
-            'params' => [],
-        ];
     }
 }

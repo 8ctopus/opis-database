@@ -21,11 +21,16 @@ use Opis\Database\Database;
 use Opis\Database\Test\Connection;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class BaseClass extends TestCase
 {
     protected static $database;
 
-    /** @var  Database */
+    /** @var Database */
     protected $db;
 
     public static function setUpBeforeClass() : void

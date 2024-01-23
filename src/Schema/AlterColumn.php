@@ -24,9 +24,10 @@ class AlterColumn extends BaseColumn
 
     /**
      * AlterColumn constructor.
-     * @param AlterTable $table
-     * @param string $name
-     * @param string|null $type
+     *
+     * @param AlterTable  $table
+     * @param string      $name
+     * @param null|string $type
      */
     public function __construct(AlterTable $table, string $name, string $type = null)
     {
@@ -35,18 +36,17 @@ class AlterColumn extends BaseColumn
     }
 
     /**
-     * @return  string
+     * @return string
      */
-    public function getTable(): string
+    public function getTable() : string
     {
         return $this->table;
     }
 
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function defaultValue($value): BaseColumn
+    public function defaultValue($value) : BaseColumn
     {
         if ($this->get('handleDefault', true)) {
             return parent::defaultValue($value);
@@ -58,7 +58,7 @@ class AlterColumn extends BaseColumn
     /**
      * @return $this
      */
-    public function autoincrement(): self
+    public function autoincrement() : self
     {
         return $this->set('autoincrement', true);
     }

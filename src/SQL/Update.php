@@ -21,14 +21,15 @@ use Opis\Database\Connection;
 
 class Update extends UpdateStatement
 {
-    /** @var    Connection */
+    /** @var Connection */
     protected $connection;
 
     /**
      * Update constructor.
-     * @param Connection $connection
-     * @param string|array $table
-     * @param SQLStatement|null $statement
+     *
+     * @param Connection        $connection
+     * @param array|string      $table
+     * @param null|SQLStatement $statement
      */
     public function __construct(Connection $connection, $table, SQLStatement $statement = null)
     {
@@ -37,11 +38,45 @@ class Update extends UpdateStatement
     }
 
     /**
-     * @param   string $sign
-     * @param   string|array $columns
-     * @param   int $value
+     * @param array|string $column
+     * @param int          $value  (optional)
      *
-     * @return  int
+     * @return int
+     */
+    public function increment($column, $value = 1)
+    {
+        return $this->incrementOrDecrement('+', $column, $value);
+    }
+
+    /**
+     * @param array|string $column
+     * @param int          $value  (optional)
+     *
+     * @return int
+     */
+    public function decrement($column, $value = 1)
+    {
+        return $this->incrementOrDecrement('-', $column, $value);
+    }
+
+    /**
+     * @param array $columns
+     *
+     * @return int
+     */
+    public function set(array $columns)
+    {
+        parent::set($columns);
+        $compiler = $this->connection->getCompiler();
+        return $this->connection->count($compiler->update($this->sql), $compiler->getParams());
+    }
+
+    /**
+     * @param string       $sign
+     * @param array|string $columns
+     * @param int          $value
+     *
+     * @return int
      */
     protected function incrementOrDecrement(string $sign, $columns, $value)
     {
@@ -64,39 +99,5 @@ class Update extends UpdateStatement
         }
 
         return $this->set($values);
-    }
-
-    /**
-     * @param   string|array $column
-     * @param   int $value (optional)
-     *
-     * @return  int
-     */
-    public function increment($column, $value = 1)
-    {
-        return $this->incrementOrDecrement('+', $column, $value);
-    }
-
-    /**
-     * @param   string|array $column
-     * @param   int $value (optional)
-     *
-     * @return  int
-     */
-    public function decrement($column, $value = 1)
-    {
-        return $this->incrementOrDecrement('-', $column, $value);
-    }
-
-    /**
-     * @param   array $columns
-     *
-     * @return  int
-     */
-    public function set(array $columns)
-    {
-        parent::set($columns);
-        $compiler = $this->connection->getCompiler();
-        return $this->connection->count($compiler->update($this->sql), $compiler->getParams());
     }
 }

@@ -20,6 +20,11 @@ namespace Opis\Database\Test\SQL;
 use Opis\Database\SQL\Expression;
 use Opis\Database\SQL\Join;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class JoinTest extends BaseClass
 {
     public function testDefaultJoin()

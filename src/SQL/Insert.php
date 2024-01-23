@@ -21,13 +21,14 @@ use Opis\Database\Connection;
 
 class Insert extends InsertStatement
 {
-    /** @var    Connection */
+    /** @var Connection */
     protected $connection;
 
     /**
      * Insert constructor.
-     * @param Connection $connection
-     * @param SQLStatement|null $statement
+     *
+     * @param Connection        $connection
+     * @param null|SQLStatement $statement
      */
     public function __construct(Connection $connection, SQLStatement $statement = null)
     {
@@ -36,9 +37,9 @@ class Insert extends InsertStatement
     }
 
     /**
-     * @param   string $table
+     * @param string $table
      *
-     * @return  boolean
+     * @return bool
      */
     public function into(string $table)
     {

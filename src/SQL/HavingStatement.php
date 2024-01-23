@@ -21,15 +21,16 @@ use Closure;
 
 class HavingStatement
 {
-    /** @var    SQLStatement */
+    /** @var SQLStatement */
     protected $sql;
 
-    /** @var    HavingExpression */
+    /** @var HavingExpression */
     protected $expression;
 
     /**
      * HavingStatement constructor.
-     * @param SQLStatement|null $statement
+     *
+     * @param null|SQLStatement $statement
      */
     public function __construct(SQLStatement $statement = null)
     {
@@ -40,14 +41,63 @@ class HavingStatement
         $this->expression = new HavingExpression($statement);
     }
 
+    public function __clone()
+    {
+        $this->sql = clone $this->sql;
+        $this->expression = new HavingExpression($this->sql);
+    }
+
     /**
-     * @param   string|Expression|Closure $column
-     * @param   Closure $value
-     * @param   string $separator
+     * @internal
      *
-     * @return  $this
+     * @return SQLStatement
      */
-    protected function addCondition($column, Closure $value = null, $separator = 'AND'): self
+    public function getSQLStatement() : SQLStatement
+    {
+        return $this->sql;
+    }
+
+    /**
+     * @param Closure|Expression|string $column
+     * @param Closure                   $value  (optional)
+     *
+     * @return $this
+     */
+    public function having($column, Closure $value = null) : self
+    {
+        return $this->addCondition($column, $value, 'AND');
+    }
+
+    /**
+     * @param Expression|string $column
+     * @param Closure           $value  (optional)
+     *
+     * @return $this
+     */
+    public function andHaving($column, Closure $value = null) : self
+    {
+        return $this->addCondition($column, $value, 'AND');
+    }
+
+    /**
+     * @param Expression|string $column
+     * @param Closure           $value  (optional)
+     *
+     * @return $this
+     */
+    public function orHaving($column, Closure $value = null) : self
+    {
+        return $this->addCondition($column, $value, 'OR');
+    }
+
+    /**
+     * @param Closure|Expression|string $column
+     * @param Closure                   $value
+     * @param string                    $separator
+     *
+     * @return $this
+     */
+    protected function addCondition($column, Closure $value = null, $separator = 'AND') : self
     {
         if (($column instanceof Closure) && $value === null) {
             $this->sql->addHavingGroupCondition($column, $separator);
@@ -58,56 +108,5 @@ class HavingStatement
             }
         }
         return $this;
-    }
-
-    /**
-     * @internal
-     * @return SQLStatement
-     */
-    public function getSQLStatement(): SQLStatement
-    {
-        return $this->sql;
-    }
-
-    /**
-     * @param   string|Expression|Closure $column
-     * @param   Closure $value (optional)
-     *
-     * @return  $this
-     */
-    public function having($column, Closure $value = null): self
-    {
-        return $this->addCondition($column, $value, 'AND');
-    }
-
-    /**
-     * @param   string|Expression $column
-     * @param   Closure $value (optional)
-     *
-     * @return  $this
-     */
-    public function andHaving($column, Closure $value = null): self
-    {
-        return $this->addCondition($column, $value, 'AND');
-    }
-
-    /**
-     * @param   string|Expression $column
-     * @param   Closure $value (optional)
-     *
-     * @return  $this
-     */
-    public function orHaving($column, Closure $value = null): self
-    {
-        return $this->addCondition($column, $value, 'OR');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __clone()
-    {
-        $this->sql = clone $this->sql;
-        $this->expression = new HavingExpression($this->sql);
     }
 }

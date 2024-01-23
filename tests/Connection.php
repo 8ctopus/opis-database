@@ -19,7 +19,6 @@ namespace Opis\Database\Test;
 
 class Connection extends \Opis\Database\Connection
 {
-
     public function __construct($driver)
     {
         parent::__construct('');

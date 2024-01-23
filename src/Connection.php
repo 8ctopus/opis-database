@@ -17,28 +17,29 @@
 
 namespace Opis\Database;
 
+use Exception;
 use PDO;
-use PDOStatement;
 use PDOException;
+use PDOStatement;
 
 class Connection
 {
-    /** @var    string  Username */
+    /** @var string Username */
     protected $username;
 
-    /** @var    string  Password */
+    /** @var string Password */
     protected $password;
 
-    /** @var    bool    Log queries flag */
+    /** @var bool Log queries flag */
     protected $logQueries = false;
 
-    /** @var    array   Logged queries */
+    /** @var array Logged queries */
     protected $log = [];
 
-    /** @var    array   Init commands */
+    /** @var array Init commands */
     protected $commands = [];
 
-    /** @var    array   PDO connection options */
+    /** @var array PDO connection options */
     protected $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
@@ -46,28 +47,28 @@ class Connection
         PDO::ATTR_EMULATE_PREPARES => false,
     ];
 
-    /** @var    \PDO    The PDO object associated with this connection */
+    /** @var PDO The PDO object associated with this connection */
     protected $pdo;
 
-    /** @var    SQL\Compiler The compiler associated with this connection */
+    /** @var SQL\Compiler The compiler associated with this connection */
     protected $compiler;
 
-    /** @var    Schema\Compiler The schema compiler associated with this connection */
+    /** @var Schema\Compiler The schema compiler associated with this connection */
     protected $schemaCompiler;
 
-    /** @var    string  The DSN for this connection */
+    /** @var string The DSN for this connection */
     protected $dsn;
 
-    /** @var    string  Driver's name */
+    /** @var string Driver's name */
     protected $driver;
 
-    /** @var    Schema   Schema instance */
+    /** @var Schema Schema instance */
     protected $schema;
 
-    /** @var    array  Compiler options */
+    /** @var array Compiler options */
     protected $compilerOptions = [];
 
-    /** @var    array   Schema compiler options */
+    /** @var array Schema compiler options */
     protected $schemaCompilerOptions = [];
 
     /** @var bool */
@@ -76,11 +77,11 @@ class Connection
     /**
      * Constructor
      *
-     * @param   string $dsn The DSN string
-     * @param   string $username (optional) Username
-     * @param   string $password (optional) Password
-     * @param   string $driver (optional) Driver's name
-     * @param   PDO $pdo (optional) PDO object
+     * @param string $dsn      The DSN string
+     * @param string $username (optional) Username
+     * @param string $password (optional) Password
+     * @param string $driver   (optional) Driver's name
+     * @param PDO    $pdo      (optional) PDO object
      */
     public function __construct(
         string $dsn = null,
@@ -97,10 +98,42 @@ class Connection
     }
 
     /**
+     * Implementation of Serializable::serialize
+     *
+     * @return string
+     */
+    public function __serialize()
+    {
+        return serialize([
+            'username' => $this->username,
+            'password' => $this->password,
+            'logQueries' => $this->logQueries,
+            'options' => $this->options,
+            'commands' => $this->commands,
+            'dsn' => $this->dsn,
+        ]);
+    }
+
+    /**
+     * Implementation of Serializable::unserialize
+     *
+     * @param string $data Serialized data
+     */
+    public function __unserialize($data)
+    {
+        $object = unserialize($data);
+
+        foreach ($object as $key => $value) {
+            $this->{$key} = $value;
+        }
+    }
+
+    /**
      * @param PDO $pdo
+     *
      * @return Connection
      */
-    public static function fromPDO(PDO $pdo): self
+    public static function fromPDO(PDO $pdo) : self
     {
         return new static(null, null, null, null, $pdo);
     }
@@ -108,11 +141,11 @@ class Connection
     /**
      * Enable or disable query logging
      *
-     * @param   bool $value (optional) Value
+     * @param bool $value (optional) Value
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function logQueries(bool $value = true): self
+    public function logQueries(bool $value = true) : self
     {
         $this->logQueries = $value;
         return $this;
@@ -120,9 +153,10 @@ class Connection
 
     /**
      * @param bool $value
+     *
      * @return Connection
      */
-    public function throwTransactionExceptions(bool $value = true): self
+    public function throwTransactionExceptions(bool $value = true) : self
     {
         $this->throwTransactionExceptions = $value;
         return $this;
@@ -131,12 +165,12 @@ class Connection
     /**
      * Add an init command
      *
-     * @param   string $query SQL command
-     * @param   array $params (optional) Params
+     * @param string $query  SQL command
+     * @param array  $params (optional) Params
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function initCommand(string $query, array $params = []): self
+    public function initCommand(string $query, array $params = []) : self
     {
         $this->commands[] = [
             'sql' => $query,
@@ -149,11 +183,11 @@ class Connection
     /**
      * Set the username
      *
-     * @param   string $username Username
+     * @param string $username Username
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function username(string $username): self
+    public function username(string $username) : self
     {
         $this->username = $username;
         return $this;
@@ -162,11 +196,11 @@ class Connection
     /**
      * Set the password
      *
-     * @param   string $password Password
+     * @param string $password Password
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function password(string $password): self
+    public function password(string $password) : self
     {
         $this->password = $password;
         return $this;
@@ -175,11 +209,11 @@ class Connection
     /**
      * Set PDO connection options
      *
-     * @param   array $options PDO options
+     * @param array $options PDO options
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function options(array $options): self
+    public function options(array $options) : self
     {
         foreach ($options as $name => $value) {
             $this->option($name, $value);
@@ -191,12 +225,12 @@ class Connection
     /**
      * Set a PDO connection option
      *
-     * @param  mixed $name
-     * @param  mixed $value
+     * @param mixed $name
+     * @param mixed $value
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function option($name, $value): self
+    public function option($name, $value) : self
     {
         $this->options[$name] = $value;
         return $this;
@@ -205,11 +239,11 @@ class Connection
     /**
      * Use persistent connections
      *
-     * @param   bool $value (optional) Value
+     * @param bool $value (optional) Value
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function persistent(bool $value = true): self
+    public function persistent(bool $value = true) : self
     {
         return $this->option(PDO::ATTR_PERSISTENT, $value);
     }
@@ -217,11 +251,11 @@ class Connection
     /**
      * Set date format
      *
-     * @param   string $format Date format
+     * @param string $format Date format
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function setDateFormat(string $format): self
+    public function setDateFormat(string $format) : self
     {
         $this->compilerOptions['dateFormat'] = $format;
         return $this;
@@ -230,11 +264,11 @@ class Connection
     /**
      * Set identifier wrapper
      *
-     * @param   string $wrapper Identifier wrapper
+     * @param string $wrapper Identifier wrapper
      *
-     * @return  Connection
+     * @return Connection
      */
-    public function setWrapperFormat(string $wrapper): self
+    public function setWrapperFormat(string $wrapper) : self
     {
         $this->compilerOptions['wrapper'] = $wrapper;
         $this->schemaCompilerOptions['wrapper'] = $wrapper;
@@ -244,7 +278,7 @@ class Connection
     /**
      * Returns the DSN associated with this connection
      *
-     * @return  string
+     * @return string
      */
     public function getDSN()
     {
@@ -254,7 +288,7 @@ class Connection
     /**
      * Returns the driver's name
      *
-     * @return  string
+     * @return string
      */
     public function getDriver()
     {
@@ -268,9 +302,9 @@ class Connection
     /**
      * Returns the schema associated with this connection
      *
-     * @return  Schema
+     * @return Schema
      */
-    public function getSchema(): Schema
+    public function getSchema() : Schema
     {
         if ($this->schema === null) {
             $this->schema = new Schema($this);
@@ -284,7 +318,7 @@ class Connection
      *
      * @return PDO
      */
-    public function getPDO(): PDO
+    public function getPDO() : PDO
     {
         if ($this->pdo == null) {
             $this->pdo = new PDO($this->getDSN(), $this->username, $this->password, $this->options);
@@ -300,36 +334,42 @@ class Connection
     /**
      * Returns an instance of the compiler associated with this connection
      *
-     * @return  SQL\Compiler
+     * @return SQL\Compiler
      */
-    public function getCompiler(): SQL\Compiler
+    public function getCompiler() : SQL\Compiler
     {
         if ($this->compiler === null) {
             switch ($this->getDriver()) {
                 case 'mysql':
                     $this->compiler = new SQL\Compiler\MySQL();
                     break;
+
                 case 'dblib':
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
                     $this->compiler = new SQL\Compiler\SQLServer();
                     break;
+
                 case 'oci':
                 case 'oracle':
                     $this->compiler = new SQL\Compiler\Oracle();
                     break;
+
                 case 'firebird':
                     $this->compiler = new SQL\Compiler\Firebird();
                     break;
+
                 case 'db2':
                 case 'ibm':
                 case 'odbc':
                     $this->compiler = new SQL\Compiler\DB2();
                     break;
+
                 case 'nuodb':
                     $this->compiler = new SQL\Compiler\NuoDB();
                     break;
+
                 default:
                     $this->compiler = new SQL\Compiler();
             }
@@ -343,35 +383,40 @@ class Connection
     /**
      * Returns an instance of the schema compiler associated with this connection
      *
-     * @throws  \Exception
+     * @return Schema\Compiler
      *
-     * @return  Schema\Compiler
+     * @throws Exception
      */
-    public function schemaCompiler(): Schema\Compiler
+    public function schemaCompiler() : Schema\Compiler
     {
         if ($this->schemaCompiler === null) {
             switch ($this->getDriver()) {
                 case 'mysql':
                     $this->schemaCompiler = new Schema\Compiler\MySQL($this);
                     break;
+
                 case 'pgsql':
                     $this->schemaCompiler = new Schema\Compiler\PostgreSQL($this);
                     break;
+
                 case 'dblib':
                 case 'mssql':
                 case 'sqlsrv':
                 case 'sybase':
                     $this->schemaCompiler = new Schema\Compiler\SQLServer($this);
                     break;
+
                 case 'sqlite':
                     $this->schemaCompiler = new Schema\Compiler\SQLite($this);
                     break;
+
                 case 'oci':
                 case 'oracle':
                     $this->schemaCompiler = new Schema\Compiler\Oracle($this);
                     break;
+
                 default:
-                    throw new \Exception('Schema not supported yet');
+                    throw new Exception('Schema not supported yet');
             }
 
             $this->schemaCompiler->setOptions($this->schemaCompilerOptions);
@@ -391,9 +436,9 @@ class Connection
     /**
      * Returns the query log for this database.
      *
-     * @return  array
+     * @return array
      */
-    public function getLog(): array
+    public function getLog() : array
     {
         return $this->log;
     }
@@ -401,10 +446,10 @@ class Connection
     /**
      * Execute a query
      *
-     * @param   string $sql SQL Query
-     * @param   array $params (optional) Query params
+     * @param string $sql    SQL Query
+     * @param array  $params (optional) Query params
      *
-     * @return  ResultSet
+     * @return ResultSet
      */
     public function query(string $sql, array $params = [])
     {
@@ -416,10 +461,10 @@ class Connection
     /**
      * Execute a non-query SQL command
      *
-     * @param   string $sql SQL Command
-     * @param   array $params (optional) Command params
+     * @param string $sql    SQL Command
+     * @param array  $params (optional) Command params
      *
-     * @return  mixed   Command result
+     * @return mixed Command result
      */
     public function command(string $sql, array $params = [])
     {
@@ -429,10 +474,10 @@ class Connection
     /**
      * Execute a query and return the number of affected rows
      *
-     * @param   string $sql SQL Query
-     * @param   array $params (optional) Query params
+     * @param string $sql    SQL Query
+     * @param array  $params (optional) Query params
      *
-     * @return  int
+     * @return int
      */
     public function count(string $sql, array $params = [])
     {
@@ -446,10 +491,10 @@ class Connection
     /**
      * Execute a query and fetch the first column
      *
-     * @param   string $sql SQL Query
-     * @param   array $params (optional) Query params
+     * @param string $sql    SQL Query
+     * @param array  $params (optional) Query params
      *
-     * @return  mixed
+     * @return mixed
      */
     public function column(string $sql, array $params = [])
     {
@@ -460,14 +505,15 @@ class Connection
         return $result;
     }
 
-
     /**
      * Transaction
      *
-     * @param callable $callback
-     * @param mixed|null $that
-     * @param mixed|null $default
-     * @return mixed|null
+     * @param callable   $callback
+     * @param null|mixed $that
+     * @param null|mixed $default
+     *
+     * @return null|mixed
+     *
      * @throws PDOException
      */
     public function transaction(callable $callback, $that = null, $default = null)
@@ -501,12 +547,12 @@ class Connection
     /**
      * Replace placeholders with parameters.
      *
-     * @param   string $query SQL query
-     * @param   array $params Query parameters
+     * @param string $query  SQL query
+     * @param array  $params Query parameters
      *
-     * @return  string
+     * @return string
      */
-    protected function replaceParams(string $query, array $params): string
+    protected function replaceParams(string $query, array $params) : string
     {
         $compiler = $this->getCompiler();
 
@@ -516,9 +562,13 @@ class Connection
 
             if (is_int($param) || is_float($param)) {
                 return $param;
-            } elseif ($param === null) {
+            }
+
+            if ($param === null) {
                 return 'NULL';
-            } elseif (is_bool($param)) {
+            }
+
+            if (is_bool($param)) {
                 return $param ? 'TRUE' : 'FALSE';
             } else {
                 return $compiler->quote($param);
@@ -529,18 +579,21 @@ class Connection
     /**
      * Prepares a query.
      *
-     * @param   string $query SQL query
-     * @param   array $params Query parameters
+     * @param string $query  SQL query
+     * @param array  $params Query parameters
      *
-     * @return  array
+     * @return array
      */
-    protected function prepare(string $query, array $params): array
+    protected function prepare(string $query, array $params) : array
     {
         try {
             $statement = $this->getPDO()->prepare($query);
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ',
-                (int)$e->getCode(), $e->getPrevious());
+            throw new PDOException(
+                $e->getMessage() . ' [ ' . $this->replaceParams($query, $params) . ' ] ',
+                (int) $e->getCode(),
+                $e->getPrevious()
+            );
         }
 
         return ['query' => $query, 'params' => $params, 'statement' => $statement];
@@ -549,9 +602,9 @@ class Connection
     /**
      * Executes a prepared query and returns TRUE on success or FALSE on failure.
      *
-     * @param   array $prepared Prepared query
+     * @param array $prepared Prepared query
      *
-     * @return  boolean
+     * @return bool
      */
     protected function execute(array $prepared)
     {
@@ -569,12 +622,14 @@ class Connection
             }
             $result = $prepared['statement']->execute();
         } catch (PDOException $e) {
-            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams($prepared['query'],
-                    $prepared['params']) . ' ] ', (int)$e->getCode(), $e->getPrevious());
+            throw new PDOException($e->getMessage() . ' [ ' . $this->replaceParams(
+                $prepared['query'],
+                $prepared['params']
+            ) . ' ] ', (int) $e->getCode(), $e->getPrevious());
         }
 
         if ($this->logQueries) {
-            /** @noinspection PhpUndefinedVariableInspection */
+            // @noinspection PhpUndefinedVariableInspection
             $log['time'] = microtime(true) - $start;
         }
 
@@ -583,7 +638,7 @@ class Connection
 
     /**
      * @param PDOStatement $statement
-     * @param array $values
+     * @param array        $values
      */
     protected function bindValues(PDOStatement $statement, array $values)
     {
@@ -599,37 +654,6 @@ class Connection
             }
 
             $statement->bindValue($key + 1, $value, $param);
-        }
-    }
-
-    /**
-     * Implementation of Serializable::serialize
-     *
-     * @return  string
-     */
-    public function __serialize()
-    {
-        return serialize([
-            'username' => $this->username,
-            'password' => $this->password,
-            'logQueries' => $this->logQueries,
-            'options' => $this->options,
-            'commands' => $this->commands,
-            'dsn' => $this->dsn,
-        ]);
-    }
-
-    /**
-     * Implementation of Serializable::unserialize
-     *
-     * @param   string $data Serialized data
-     */
-    public function __unserialize($data)
-    {
-        $object = unserialize($data);
-
-        foreach ($object as $key => $value) {
-            $this->{$key} = $value;
         }
     }
 }

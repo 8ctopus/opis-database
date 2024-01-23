@@ -17,9 +17,10 @@
 
 namespace Opis\Database\Schema\Compiler;
 
-use Opis\Database\Schema\{
-    AlterTable, Compiler, BaseColumn, CreateTable
-};
+use Opis\Database\Schema\AlterTable;
+use Opis\Database\Schema\BaseColumn;
+use Opis\Database\Schema\Compiler;
+use Opis\Database\Schema\CreateTable;
 
 class SQLite extends Compiler
 {
@@ -33,33 +34,9 @@ class SQLite extends Compiler
     private $nopk = false;
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleTypeInteger(BaseColumn $column): string
-    {
-        return 'INTEGER';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeTime(BaseColumn $column): string
-    {
-        return 'DATETIME';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleTypeTimestamp(BaseColumn $column): string
-    {
-        return 'DATETIME';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function handleModifierAutoincrement(BaseColumn $column): string
+    public function handleModifierAutoincrement(BaseColumn $column) : string
     {
         $modifier = parent::handleModifierAutoincrement($column);
 
@@ -72,9 +49,9 @@ class SQLite extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function handlePrimaryKey(CreateTable $schema): string
+    public function handlePrimaryKey(CreateTable $schema) : string
     {
         if ($this->nopk) {
             return '';
@@ -84,35 +61,9 @@ class SQLite extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    protected function handleEngine(CreateTable $schema): string
-    {
-        return '';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleAddUnique(AlterTable $table, $data): string
-    {
-        return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
-            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function handleAddIndex(AlterTable $table, $data): string
-    {
-        return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
-            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function currentDatabase(string $dsn): array
+    public function currentDatabase(string $dsn) : array
     {
         return [
             'result' => substr($dsn, strpos($dsn, ':') + 1),
@@ -120,9 +71,9 @@ class SQLite extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getTables(string $database): array
+    public function getTables(string $database) : array
     {
         $sql = 'SELECT ' . $this->wrap('name') . ' FROM ' . $this->wrap('sqlite_master')
             . ' WHERE type = ? ORDER BY ' . $this->wrap('name') . ' ASC';
@@ -134,9 +85,9 @@ class SQLite extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getColumns(string $database, string $table): array
+    public function getColumns(string $database, string $table) : array
     {
         return [
             'sql' => 'PRAGMA table_info(' . $this->wrap($table) . ')',
@@ -145,13 +96,63 @@ class SQLite extends Compiler
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function renameTable(string $current, string $new): array
+    public function renameTable(string $current, string $new) : array
     {
         return [
             'sql' => 'ALTER TABLE ' . $this->wrap($current) . ' RENAME TO ' . $this->wrap($new),
             'params' => [],
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeInteger(BaseColumn $column) : string
+    {
+        return 'INTEGER';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeTime(BaseColumn $column) : string
+    {
+        return 'DATETIME';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleTypeTimestamp(BaseColumn $column) : string
+    {
+        return 'DATETIME';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleEngine(CreateTable $schema) : string
+    {
+        return '';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleAddUnique(AlterTable $table, $data) : string
+    {
+        return 'CREATE UNIQUE INDEX ' . $this->wrap($data['name']) . ' ON '
+            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handleAddIndex(AlterTable $table, $data) : string
+    {
+        return 'CREATE INDEX ' . $this->wrap($data['name']) . ' ON '
+            . $this->wrap($table->getTableName()) . '(' . $this->wrapArray($data['columns']) . ')';
     }
 }

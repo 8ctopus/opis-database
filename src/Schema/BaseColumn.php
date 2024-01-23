@@ -30,8 +30,9 @@ class BaseColumn
 
     /**
      * BaseColumn constructor.
-     * @param string $name
-     * @param string|null $type
+     *
+     * @param string      $name
+     * @param null|string $type
      */
     public function __construct(string $name, string $type = null)
     {
@@ -42,7 +43,7 @@ class BaseColumn
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName() : string
     {
         return $this->name;
     }
@@ -50,7 +51,7 @@ class BaseColumn
     /**
      * @return string
      */
-    public function getType(): string
+    public function getType() : string
     {
         return $this->type;
     }
@@ -58,16 +59,17 @@ class BaseColumn
     /**
      * @return array
      */
-    public function getProperties(): array
+    public function getProperties() : array
     {
         return $this->properties;
     }
 
     /**
      * @param string $type
+     *
      * @return $this
      */
-    public function setType(string $type): self
+    public function setType(string $type) : self
     {
         $this->type = $type;
         return $this;
@@ -75,10 +77,11 @@ class BaseColumn
 
     /**
      * @param string $name
-     * @param $value
+     * @param        $value
+     *
      * @return $this
      */
-    public function set(string $name, $value): self
+    public function set(string $name, $value) : self
     {
         $this->properties[$name] = $value;
         return $this;
@@ -86,17 +89,19 @@ class BaseColumn
 
     /**
      * @param string $name
+     *
      * @return bool
      */
-    public function has(string $name): bool
+    public function has(string $name) : bool
     {
         return isset($this->properties[$name]);
     }
 
     /**
-     * @param string $name
-     * @param mixed|null $default
-     * @return mixed|null
+     * @param string     $name
+     * @param null|mixed $default
+     *
+     * @return null|mixed
      */
     public function get(string $name, $default = null)
     {
@@ -105,9 +110,10 @@ class BaseColumn
 
     /**
      * @param string $value
+     *
      * @return $this
      */
-    public function size(string $value): self
+    public function size(string $value) : self
     {
         $value = strtolower($value);
 
@@ -121,43 +127,47 @@ class BaseColumn
     /**
      * @return $this
      */
-    public function notNull(): self
+    public function notNull() : self
     {
         return $this->set('nullable', false);
     }
 
     /**
      * @param string $comment
+     *
      * @return $this
      */
-    public function description(string $comment): self
+    public function description(string $comment) : self
     {
         return $this->set('description', $comment);
     }
 
     /**
      * @param $value
+     *
      * @return $this
      */
-    public function defaultValue($value): self
+    public function defaultValue($value) : self
     {
         return $this->set('default', $value);
     }
 
     /**
      * @param bool $value
+     *
      * @return $this
      */
-    public function unsigned(bool $value = true): self
+    public function unsigned(bool $value = true) : self
     {
         return $this->set('unsigned', $value);
     }
 
     /**
      * @param $value
+     *
      * @return $this
      */
-    public function length($value): self
+    public function length($value) : self
     {
         return $this->set('length', $value);
     }
