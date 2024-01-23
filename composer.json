@@ -14,9 +14,6 @@
             "email": "sarca_sorin@hotmail.com"
         }
     ],
-    "scripts": {
-      "test": "vendor/bin/phpunit"
-    },
     "require": {
         "php": "^7.0|^8.0",
         "ext-pdo": "*"
